@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>	// enables boolean
 #include <string.h>		// string manipulation
+#include <ctype.h>      // tolower()
 
 /************** dictionary tree starts here **************/
 
@@ -34,15 +35,31 @@ dict root = NULL;
 
 // insert word
 void insert(char * str){
-
     dict ptr = root;
-    while(str != 0){
+    char * tok = str;
+    for(int i = 0; i < strlen(str); i++){
+
+        // to lowercase
+        if(*tok > 64 && *tok < 91) *tok = tolower(*tok);
+
+        printf("======level %d (%c)======\n",i,*tok);
+
         if (ptr == NULL){
             ptr = malloc(sizeof(dict));// allocates memory for new node
             ptr -> isEndOfWord = false;
         }
-        ptr = ptr->next[]// need to make to lowercase and conversion
-        str++;
+
+        printf("A");
+
+        ptr = ptr->next[*tok];// need to make to lowercase and conversion
+        printf("B");
+        tok++;
+        printf("C\n");
+    }
+    // if last child is null, then it is end of word
+    if (ptr == NULL){
+        ptr = malloc(sizeof(dict));// allocates memory for new node
+        ptr -> isEndOfWord = true;
     }
 
 }
@@ -51,13 +68,14 @@ void insert(char * str){
 
 /************** dictionary tree ends here **************/
 
+
 int main(){
-    char str[] = {"bat batch boy coy"};
-    char * ptr = strtok(str," ");
-    while (ptr != NULL && i<10){
-        printf("inserting %s\n", ptr);
-        insert(ptr);
-        ptr = strtok(NULL," ");
+    char buff[] = {"Boy cOy"};
+    char * tok = strtok(buff," ");
+    while (tok != NULL){
+        printf("inserting %s\n", tok);
+        insert(tok);
+        tok = strtok(NULL," ");
 	}
 
 	return 0;
