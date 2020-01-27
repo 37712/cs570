@@ -19,6 +19,9 @@ dictionary.o : dictionary.h dictionary.c
 
 spellcheck.o : dictionary.h spellcheck.c
 
+run:
+	./dictionary Austen-Pride-and-Prejudice.txt aspell_list_en.txt
+
 clean :
 	rm *.o
 
