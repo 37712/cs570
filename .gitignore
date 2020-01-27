@@ -5,6 +5,8 @@
 *.exe
 *.out
 
+dictionary
+
 ### CodeBlocks ###
 # specific to CodeBlocks IDE
 *.layout
