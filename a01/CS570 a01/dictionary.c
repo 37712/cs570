@@ -11,6 +11,15 @@
 #include <string.h>		// string manipulation
 #include <ctype.h>      // tolower()
 
+void pprint(char *ptr){
+    // print character of pointer
+    printf("ptr (chr) -> %c\n",*ptr);
+    // print decimal value of character
+    printf("ptr (dec) -> %d\n",*ptr);
+    // print pointer location address
+    printf("ptr (adr) -> %p\n\n",ptr);
+}
+
 /************** dictionary tree starts here **************/
 
 //	Note to self:
@@ -33,24 +42,33 @@ dict root = NULL;
 
 // make lowercase and convert to range 0 - 26
 int tokToInt(char * tok){
+
+    //printf("tok = (%c), dec = %d, ",*tok, *tok);
+
     // if A - Z, make lowercase
     if(*tok > 64 && *tok < 91) *tok = tolower(*tok);
     // if tok is not a lower case letter
-    if((*tok < 'a' || *tok > 'z') && *tok != '\'')
-        printf("\nError on tokToInt method, tok = %c\n",*tok);
-    // if ' char, make 26
-    if(*tok == '\'') *tok = 26;
+    if((*tok < 'a' || *tok > 'z') && *tok != '\''){
+        printf("\nError on tokToInt method\n");
+        pprint(tok);
+    }
+    // if ' char, return 26
+    if(*tok == '\'') return 25;
     //convert *tok letter char to int from 0 to 26
     int tok_int = (int)*tok - 97;
+
+    //printf("tok_int = %d\n",tok_int);
 
     return tok_int;
 }
 
 // insert word
 void insert(char * str){
+    //printf("inserting (%s)\n", str);
+
     // create root node and allocate memory
     if (root == NULL){
-        printf("****rood is created****\n");
+        //printf("****rood is created****\n");
         root = malloc(sizeof(struct dictEntry));// allocate memory for new node
         for(int i = 0; i < 27; i++)
             root->next[i] = NULL;    // set all possible children to NULL
@@ -62,7 +80,7 @@ void insert(char * str){
 
     for(int i = 0; i < strlen(str); i++){
 
-        printf("iteration %d\n",i);
+        //printf("iteration %d\n",i);
 
         // make lowercase and convert
         int tok_int = tokToInt(tok);
@@ -97,11 +115,11 @@ bool find (char * str){
     dict ptr = root; // remember, never mess around with the root
 
     for(int i = 0; i < strlen(str); i++){
-        printf("iteration %d, cheking for %c\n",i,*tok);
+        //printf("iteration %d, cheking for %c\n",i,*tok);
 
         int tok_int = tokToInt(tok); // convert tok to int
         if(ptr->next[tok_int] == NULL){
-            printf("exit find\n");
+            //printf("exit find\n");
             return false;
         }
 
@@ -112,6 +130,9 @@ bool find (char * str){
 }
 
 /************** dictionary tree ends here **************/
+
+
+
 /*
 void test (){
     printf("\n*****testing*****\n");
@@ -161,7 +182,7 @@ int main(){
 	return 0;
 }
 
-/*
+
 questions and to do list:
 
 
