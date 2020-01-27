@@ -8,6 +8,8 @@ Edoras
 Login: misc0230
 Pass: 0K5qL2Aw
 
+ssh misc0230@edoras.sdsu.edu
+
 Takes two arguments file
 
 Array of pointers for dictionary tree
