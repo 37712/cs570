@@ -16,6 +16,7 @@
 //	Note to self:
 //	DO NOT MESS AROUND WITH THE ROOT USE A POINTER
 //  DO NOT FORGET TO MAKE BOOL TRUE OR FALSE
+//  DO NOT MESS AROUND WITH ORIGINAL STRING USE A POINTER
 
 #define Nchars 27 /* a-z + ' 0-25 + 26*/
 
@@ -34,34 +35,34 @@ dict root = NULL;
 int tokToInt(char * tok){
     // if A - Z, make lowercase
     if(*tok > 64 && *tok < 91) *tok = tolower(*tok);
+    // if tok is not a lower case letter
+    if((*tok < 'a' || *tok > 'z') && *tok != '\'')
+        printf("\nError on tokToInt method, tok = %c\n",*tok);
     // if ' char, make 26
     if(*tok == '\'') *tok = 26;
-    // if tok is not a lower case letter
-    if(*tok < 'a' || *tok > 'z') printf("\nError on tokToInt method, tok = %c\n",*tok);
-    //convert *tok letter char to int from 0 to 25
+    //convert *tok letter char to int from 0 to 26
     int tok_int = (int)*tok - 97;
 
     return tok_int;
 }
 
 // insert word
-void insert(char * tok){
-
+void insert(char * str){
     // create root node and allocate memory
     if (root == NULL){
         printf("****rood is created****\n");
-
         root = malloc(sizeof(struct dictEntry));// allocate memory for new node
         for(int i = 0; i < 27; i++)
             root->next[i] = NULL;    // set all possible children to NULL
         root -> isEndOfWord = true;  // declare end
     }
 
+    char * tok = str; // do not mess around with original string, use pointer
     dict ptr = root; // remember, never mess around with the root
 
-    for(int i = 0; i < strlen(tok); i++){
+    for(int i = 0; i < strlen(str); i++){
 
-        //printf("iteration %d\n",i);
+        printf("iteration %d\n",i);
 
         // make lowercase and convert
         int tok_int = tokToInt(tok);
@@ -73,8 +74,8 @@ void insert(char * tok){
         if (ptr->next[tok_int] == NULL){
             ptr->next[tok_int] = malloc(sizeof(struct dictEntry));// allocate memory for new node
             dict tmp = ptr->next[tok_int];
-            for(int i = 0; i < 27; i++)
-                tmp->next[i] = NULL;// make all NULL
+            for(int j = 0; j < 27; j++)
+                tmp->next[j] = NULL;// make all NULL
             tmp->isEndOfWord = true;
             //printf("next node end is set to true\n");
         }
@@ -86,45 +87,54 @@ void insert(char * tok){
 
         //printf("C\n");
 
-        tok++;  // go to next token character
+        tok++;  // go to next character in token
     }
 }
 
 bool find (char * str){
-    dict ptr = root;
-    char * tok = str;
-    bool found = false;
+    if(root == NULL) return false;
+    char * tok = str; // do not mess around with original string, use pointer
+    dict ptr = root; // remember, never mess around with the root
 
-    while(ptr->isEndOfWord != true && found != true){
-        printf("str = %s\n", str);
+    for(int i = 0; i < strlen(str); i++){
+        printf("iteration %d, cheking for %c\n",i,*tok);
+
         int tok_int = tokToInt(tok); // convert tok to int
+        if(ptr->next[tok_int] == NULL){
+            printf("exit find\n");
+            return false;
+        }
+
         ptr = ptr->next[tok_int]; // move pointer to next location
-
+        tok++;
     }
-
-    return found;
+    return true;
 }
 
 /************** dictionary tree ends here **************/
-
+/*
 void test (){
+    printf("\n*****testing*****\n");
     printf("root address %p\n", root);
     printf("root end of word %s\n",(root->isEndOfWord) ? "true" : "false");
-    if(root->next[0] == NULL) printf("root next[0] = NULL");
+    if(root->next[0] == NULL) printf("root next[0] = NULL\n");
+
     dict ptr = root->next[0];
     printf("ptr address %p\n", ptr);
     printf("ptr end of word %s\n",(ptr->isEndOfWord) ? "true" : "false");
-    if(ptr->next[0] == NULL) printf("ptr next[0] = NULL");
+    if(ptr->next[0] == NULL) printf("ptr next[0] = NULL\n");
+
     dict ptr2 = root->next[0]->next[0];
     printf("ptr2 address %p\n", ptr2);
     printf("ptr2 end of word %s\n",(ptr2->isEndOfWord) ? "true" : "false");
-    if(ptr2->next[0] == NULL) printf("ptr2 next[0] = NULL");
+    if(ptr2->next[0] == NULL) printf("ptr2 next[0] = NULL\n");
+    printf("*****testing*****\n\n");
 }
 
 int main(){
 
-    //char buff[] = "Boy cOy";
-    char buff[] = "aaa";
+    char buff[] = "Boy cOy";
+    //char buff[256] = "aaa";
 
     // inserting
     char * tok = strtok(buff," ");
@@ -134,17 +144,17 @@ int main(){
         tok = strtok(NULL," ");
 	}
 
-	printf("*****testing*****\n");
-	test();
+
+	//test();
 
 	// find
-	char buff2[] = "cOY BOy";
-	printf(" buff2 = %s\n", buff2);
-	tok = strtok(buff," ");
+	char buff2[] = "cOY bOy";
+	printf(" string to find = %s\n", buff2);
+	tok = strtok(buff2," ");
     while (tok != NULL){
         printf("finding %s\n", tok);
-        if(find(tok)) printf("tok: %s, was NOT found\n", tok);
-        else printf("tok: %s, was found\n", tok);
+        if(find(tok)) printf("tok: %s, was found\n", tok);
+        else printf("tok: %s, was NOT found\n", tok);
         tok = strtok(NULL," ");
 	}
 
@@ -152,10 +162,7 @@ int main(){
 }
 
 /*
-questions and todo list:
-
-is char ' an aceptable char to store?
-
+questions and to do list:
 
 
 
