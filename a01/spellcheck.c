@@ -13,6 +13,9 @@
 
 #include "dictionary.h"   // my dictionary
 
+//Global Variables
+
+
 int main (int argc, char **argv)
 {
     if(argc < 3)
@@ -32,10 +35,15 @@ int main (int argc, char **argv)
     if (fp1 == NULL || fp2 == NULL)
     {
 		printf("Failed to open or find file!\n");
+		printf("argc = %d\n", argc);
+        printf("fp1 = %s\n", argv[1]);
+        printf("fp2 = %s\n", argv[2]);
 		return -2;
 	}
+	printf("fp1 = %s\n", argv[1]);
+    printf("fp2 = %s\n", argv[2]);
 
-    //printf("*********POPULATING***********\n");
+    printf("*********POPULATING***********\n");
 
     // populate dictionary
     char str[512];
@@ -49,7 +57,7 @@ int main (int argc, char **argv)
         insert(tok);
 	}
 
-    //printf("*********FINDING***********\n");
+    printf("*********FINDING***********\n");
 
     // find token
 	char str2[512];

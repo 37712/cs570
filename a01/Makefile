@@ -1,9 +1,9 @@
 # CXX Make variable for compiler
-CXX=g++
+CC=gcc
 # Make variable for compiler options
 #	-std=c++11  C/C++ variant to use, e.g. C++ 2011
 #	-g          include information for symbolic debugger e.g. gdb 
-CXXFLAGS=-std=c++11 -g
+CCFLAGS=-std=c11 -g
 
 # Rules format:
 # target : dependency1 dependency2 ... dependencyN
@@ -13,11 +13,11 @@ CXXFLAGS=-std=c++11 -g
 # make target specifies a specific target
 # $^ is an example of a special variable.  It substitutes all dependencies
 spellcheck : dictionary.o spellcheck.o
-	$(CXX) $(CXXFLAGS) -o dictionary $^
+	$(CC) $(CCFLAGS) -o dictionary $^
 
-dictionary.o : dictionary.h dictionary.C
+dictionary.o : dictionary.h dictionary.c
 
-spellcheck.o : dictionary.h spellcheck.C
+spellcheck.o : dictionary.h spellcheck.c
 
 clean :
 	rm *.o
