@@ -15,7 +15,7 @@
 
 //Global Variables
 
-/*
+
 int main (int argc, char **argv)
 {
     const char delimiters[] = "\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
@@ -78,4 +78,3 @@ int main (int argc, char **argv)
 
     return 0;
 }
-*/
