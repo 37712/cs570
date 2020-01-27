@@ -13,7 +13,7 @@
 
 void pprint(char *ptr){
     // print character of pointer
-    printf("ptr (chr) -> %c\n",*ptr);
+    printf("ptr (chr) -> (%c)\n",*ptr);
     // print decimal value of character
     printf("ptr (dec) -> %d\n",*ptr);
     // print pointer location address
@@ -132,8 +132,6 @@ bool find (char * str){
 /************** dictionary tree ends here **************/
 
 
-
-/*
 void test (){
     printf("\n*****testing*****\n");
     printf("root address %p\n", root);
@@ -154,7 +152,7 @@ void test (){
 
 int main(){
 
-    char buff[] = "Boy cOy";
+    char buff[] = "batch bat";
     //char buff[256] = "aaa";
 
     // inserting
@@ -167,7 +165,7 @@ int main(){
 
 
 	//test();
-
+    /*
 	// find
 	char buff2[] = "cOY bOy";
 	printf(" string to find = %s\n", buff2);
@@ -178,17 +176,6 @@ int main(){
         else printf("tok: %s, was NOT found\n", tok);
         tok = strtok(NULL," ");
 	}
-
+    */
 	return 0;
 }
-
-
-questions and to do list:
-
-
-
-
-
-
-
-*/

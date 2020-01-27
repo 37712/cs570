@@ -15,10 +15,10 @@
 
 //Global Variables
 
-
+/*
 int main (int argc, char **argv)
 {
-    const char delimiters[256] = "\0\t\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
+    const char delimiters[] = "\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
 
     // text to check
     FILE *fp1 = fopen(argv[1], "r");// 'r' is for read
@@ -37,6 +37,8 @@ int main (int argc, char **argv)
 	printf("fp1 = %s\n", argv[1]);
     printf("fp2 = %s\n", argv[2]);
 
+    printf("*********POPULATING***********\n");
+
     // populate dictionary
     char str[512];
 	char * tok = NULL;
@@ -44,28 +46,36 @@ int main (int argc, char **argv)
     {
         //printf("a");
         tok = strtok(str, delimiters);
-        tok = strtok(tok,"\n");
+        //tok = strtok(tok,"\n");
         //printf("tok (%s)\n",tok);
         insert(tok);
 	}
-	fclose(fp2);// never forget to close the file
+
+    printf("*********FINDING***********\n");
 
     // find token
 	char str2[512];
-
+    char tmp[128];
 	while(fgets(str2, 512, (FILE*)fp1))
     {
+        //printf("_str = (%s)\n",str2);
         tok = strtok(str2, delimiters);
-        tok = strtok(tok, "\n");
+        //printf("Atok = (%s)\n",tok);
+        //tok = strtok(tok, "\n");
+        //printf("Btok = (%s)\n",tok);
         while (tok != NULL)
         {
-            printf("tok = (%s)\n",tok);
-            if(!find(tok)) printf("%s\n",tok);
+            //printf("find(%s)\n",tok);
+            strcpy (tmp,tok);// do not modify original string
+            if(!find(tmp)) printf("%s\n",tok);
             tok = strtok(NULL, delimiters);
-            tok = strtok(tok, "\n");
         }
 	}
-	fclose(fp1);// never forget to close the file
+
+	// never forget to close the file
+	fclose(fp2);
+	fclose(fp1);
 
     return 0;
 }
+*/
