@@ -1,4 +1,6 @@
 /*
+ * spellcheck.c
+ *
  * CS570
  * Carlos Gamino Reyes
  * 819230978
@@ -7,7 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>	// enables boolean
+#include <stdbool.h>    // enables boolean
 #include <string.h>		// string manipulation
 #include <ctype.h>      // tolower()
 
@@ -21,6 +23,7 @@ int main (int argc, char **argv)
         return -1;
     }
 
+    //delimiter for strtok
     const char delimiters[] = "\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
 
     // text to check
@@ -35,37 +38,25 @@ int main (int argc, char **argv)
 		return -2;
 	}
 
-    //printf("*********POPULATING***********\n");
-
     // populate dictionary
     char str[512];
 	char * tok = NULL;
 	while(fgets(str, 512, (FILE*)fp2))
     {
-        //printf("a");
         tok = strtok(str, delimiters);
-        //tok = strtok(tok,"\n");
-        //printf("tok (%s)\n",tok);
         insert(tok);
 	}
-
-    //printf("*********FINDING***********\n");
 
     // find token
 	char str2[512];
     char tmp[128];
 	while(fgets(str2, 512, (FILE*)fp1))
     {
-        //printf("_str = (%s)\n",str2);
         tok = strtok(str2, delimiters);
-        //printf("Atok = (%s)\n",tok);
-        //tok = strtok(tok, "\n");
-        //printf("Btok = (%s)\n",tok);
         while (tok != NULL)
         {
-            //printf("find(%s)\n",tok);
             strcpy (tmp,tok);// do not modify original string
-            if(!find(tmp)) printf("%s\n",tok);
+            if(!find(tmp)) printf("%s\n",tok);// if not found, print to stdout
             tok = strtok(NULL, delimiters);
         }
 	}
