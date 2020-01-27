@@ -71,7 +71,8 @@ void insert(char * str){
     if (root == NULL){
         //printf("****rood is created****\n");
         root = malloc(sizeof(struct dictEntry));// allocate memory for new node
-        for(int i = 0; i < 27; i++)
+        int i;
+        for(i = 0; i < 27; i++)
             root->next[i] = NULL;    // set all possible children to NULL
         root -> isEndOfWord = false;  // root is never end of word
     }
@@ -79,7 +80,8 @@ void insert(char * str){
     char * tok = str; // do not mess around with original string, use pointer
     dict ptr = root; // remember, never mess around with the root
 
-    for(int i = 0; i < strlen(str); i++){
+    int i;
+    for(i = 0; i < strlen(str); i++){
 
         //printf("iteration %d\n",i);
 
@@ -93,7 +95,8 @@ void insert(char * str){
         if (ptr->next[tok_int] == NULL){
             ptr->next[tok_int] = malloc(sizeof(struct dictEntry));// allocate memory for new node
             dict tmp = ptr->next[tok_int];
-            for(int j = 0; j < 27; j++)
+            int j;
+            for(j = 0; j < 27; j++)
                 tmp->next[j] = NULL;// make all NULL
             tmp->isEndOfWord = false;
             //printf("next node end is set to true\n");
@@ -116,7 +119,8 @@ bool find (char * str){
     char * tok = str; // do not mess around with original string, use pointer
     dict ptr = root; // remember, never mess around with the root
 
-    for(int i = 0; i < strlen(str); i++){
+    int i;
+    for(i = 0; i < strlen(str); i++){
         //printf("iteration %d, cheking for %c\n",i,*tok);
 
         int tok_int = tokToInt(tok); // convert tok to int
