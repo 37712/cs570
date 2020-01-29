@@ -15,9 +15,12 @@ CCFLAGS=-std=c11 -g
 spellcheck : dictionary.o spellcheck.o
 	$(CC) $(CCFLAGS) -o dictionary $^
 
+#To produce only the compiled code (without any linking), use the -C option.
 dictionary.o : dictionary.h dictionary.c
+	$(CC) $(CCFLAGS) -c -o dictionary.o dictionary.c
 
 spellcheck.o : dictionary.h spellcheck.c
+	$(CC) $(CCFLAGS) -c -o spellcheck.o spellcheck.c
 
 run:
 	./dictionary Austen-Pride-and-Prejudice.txt aspell_list_en.txt

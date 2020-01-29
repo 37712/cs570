@@ -18,13 +18,13 @@
 
 int main (int argc, char **argv)
 {
-    if(argc == 2) // if aguments are not set or are wrong
+    if(argc != 3) // check if arguments are wrong or not set
     {
         printf("failed to specify arguments");
         return -1;
     }
 
-    // open the text to check
+    // open text to spellcheck
     FILE *fp1 = fopen(argv[1], "r");// 'r' is for read
 
     // open dictionary
@@ -46,9 +46,9 @@ int main (int argc, char **argv)
 	while(fgets(str, 512, (FILE*)fp2))
     {
         tok = strtok(str, delimiters);
-        if(!insert(tok))
+        if(!insert(tok)) // if failed to insert end program
         {
-            printf("failed to insert\n");
+            printf("failed to insert (%s)\n", tok);
             return -3;
         }
 	}
@@ -61,13 +61,13 @@ int main (int argc, char **argv)
         tok = strtok(str2, delimiters);
         while (tok != NULL)
         {
-            strcpy (tmp,tok);// do not modify original string
+            strcpy (tmp,tok); // do not modify original token string
             if(!find(tmp)) printf("%s\n",tok);// if not found, print to stdout
             tok = strtok(NULL, delimiters);
         }
 	}
 
-	// never forget to close the file
+	// never forget to close opened files
 	fclose(fp2);
 	fclose(fp1);
 

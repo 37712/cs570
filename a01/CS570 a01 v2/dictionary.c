@@ -41,9 +41,9 @@ void pprint(char *ptr)
     // print character of pointer
     printf("ptr (chr) -> (%c)\n",*ptr);
     // print decimal value of character
-    printf("ptr (dec) -> %d\n",*ptr);
+    printf("ptr (dec) -> (%d)\n",*ptr);
     // print pointer location address
-    printf("ptr (adr) -> %p\n\n",ptr);
+    printf("ptr (adr) -> (%p)\n\n",ptr);
 }
 
 // make lowercase and convert to range 0 - 26
@@ -56,7 +56,7 @@ int tokToInt(char * tok)
     {
         perror("\nError on tokToInt method\n");
         pprint(tok);
-        return -1;
+        return -1; // return error = -1
     }
     // if ' char, return 26
     if(*tok == '\'') return 26;
@@ -71,16 +71,14 @@ bool insert(char * str)
     if (root == NULL)
     {
         root = malloc(sizeof(struct dictEntry)); // allocate memory for root node
-        int i;
-        for(i = 0; i < 27; i++) root->next[i] = NULL; // set all children to NULL
+        for(int i = 0; i < 27; i++) root->next[i] = NULL; // set all children to NULL
         root -> isEndOfWord = false; // root is never end of word
     }
 
     char * tok = str; // do not mess around with original string, use pointer
     dict ptr = root; // remember, never mess around with the root
 
-    int i;
-    for(i = 0; i < strlen(str); i++)
+    for(int i = 0; i < strlen(str); i++)
     {
         // make lowercase and convert
         int tok_int = tokToInt(tok);
@@ -93,8 +91,7 @@ bool insert(char * str)
         {
             ptr->next[tok_int] = malloc(sizeof(struct dictEntry));// allocate memory for new node
             dict tmp = ptr->next[tok_int];
-            int j;
-            for(j = 0; j < 27; j++) tmp->next[j] = NULL;// set all children to NULL
+            for(int j = 0; j < 27; j++) tmp->next[j] = NULL;// set all children to NULL
             tmp->isEndOfWord = false;
         }
 
@@ -112,8 +109,7 @@ bool find (char * str){
     dict ptr = root; // remember, never mess around with the root
     char * tok = str; // do not mess around with original string, use pointer
 
-    int i;
-    for(i = 0; i < strlen(str); i++)
+    for(int i = 0; i < strlen(str); i++)
     {
         int tok_int = tokToInt(tok); // convert tok to int
 
@@ -122,7 +118,7 @@ bool find (char * str){
 
         if(ptr->next[tok_int] == NULL)return false;
         ptr = ptr->next[tok_int]; // move pointer to next location
-        tok++;
+        tok++; // go to next character in token
     }
     // reached end of tok, check to see if word exists
     return (ptr->isEndOfWord) ? true : false;
