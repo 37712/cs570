@@ -1,11 +1,12 @@
 /*
  * spellcheck.c
  *
- * CS570
+ * CS570, spring 2020
  * Carlos Gamino Reyes
+ * misc0230@edoras.sdsu.edu
  * 819230978
  *
-*/
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,26 +18,27 @@
 
 int main (int argc, char **argv)
 {
-    if(argc < 3)
+    if(argc == 2) // if aguments are not set or are wrong
     {
-        printf("failed to specify argumetns");
+        printf("failed to specify arguments");
         return -1;
     }
 
-    //delimiter for strtok
-    const char delimiters[] = "\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
-
-    // text to check
+    // open the text to check
     FILE *fp1 = fopen(argv[1], "r");// 'r' is for read
 
-    // dictionary
+    // open dictionary
     FILE *fp2 = fopen(argv[2], "r");// 'r' is for read
 
+    // check that both files opened successfully
     if (fp1 == NULL || fp2 == NULL)
     {
 		printf("Failed to open or find file!\n");
 		return -2;
 	}
+
+	//delimiter for strtok
+    const char delimiters[] = "\t\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
 
     // populate dictionary
     char str[512];
@@ -44,7 +46,11 @@ int main (int argc, char **argv)
 	while(fgets(str, 512, (FILE*)fp2))
     {
         tok = strtok(str, delimiters);
-        insert(tok);
+        if(!insert(tok))
+        {
+            printf("failed to insert\n");
+            return -3;
+        }
 	}
 
     // find token

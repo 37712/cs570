@@ -1,11 +1,12 @@
 /*
  * dictionary.c
  *
- * CS570
+ * CS570, spring 2020
  * Carlos Gamino Reyes
+ * misc0230@edoras.sdsu.edu
  * 819230978
  *
-*/
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,16 +21,16 @@
 //  DO NOT FORGET TO MAKE BOOL TRUE OR FALSE
 //  DO NOT MESS AROUND WITH ORIGINAL STRING USE A POINTER
 
-#define Nchars 27 /* a-z + ' 0-25 + 26*/
+#define Nchars 27 /* a-z + ' 0-25 + 26 */
 
 struct dictEntry
 {
-	bool isEndOfWord;// isEndOfWord is true if the node represents end of a word
+	bool isEndOfWord;// isEndOfWord is true if the node represents the end of a word
 	struct dictEntry *next[Nchars];// make all null if end of word is true
 };
 
 // this enables us to just say "dict" instead of "struct dictEntry"
-typedef struct dictEntry * dict; // dict is pointer
+typedef struct dictEntry * dict; // also, dict is pointer type
 
 // Global variables
 dict root = NULL;
@@ -51,20 +52,20 @@ int tokToInt(char * tok)
     // if A - Z, make lowercase
     if(*tok > 64 && *tok < 91) *tok = tolower(*tok);
     // if tok is not a lower case letter or a '
-    if((*tok < 'a' || *tok > 'z') && *tok != '\''){
+    if((*tok < 'a' || *tok > 'z') && *tok != '\'')
+    {
         perror("\nError on tokToInt method\n");
         pprint(tok);
+        return -1;
     }
     // if ' char, return 26
     if(*tok == '\'') return 26;
     //convert *tok letter char to int from 0 to 25
-    int tok_int = (int)*tok - 97;
-
-    return tok_int;
+    return (int)*tok - 97;
 }
 
 // insert word
-void insert(char * str)
+bool insert(char * str)
 {
     // create root node and allocate memory
     if (root == NULL)
@@ -84,6 +85,9 @@ void insert(char * str)
         // make lowercase and convert
         int tok_int = tokToInt(tok);
 
+        // if tokToInt method returns error
+        if(tok_int == -1) return false;
+
         // if ptr->next is NULL, create new dictEntry
         if (ptr->next[tok_int] == NULL)
         {
@@ -98,23 +102,29 @@ void insert(char * str)
         tok++;  // go to next character in token
     }
 
-    ptr->isEndOfWord = true; // ptr node is no longer end, set to true
+    ptr->isEndOfWord = true; // ptr node is end of word, set to true
+    return true;
 }
 
+// find word
 bool find (char * str){
-    if(root == NULL) return false;
-    char * tok = str; // do not mess around with original string, use pointer
+    if(root == NULL) return false; // if root has yet to be created
     dict ptr = root; // remember, never mess around with the root
+    char * tok = str; // do not mess around with original string, use pointer
 
     int i;
     for(i = 0; i < strlen(str); i++)
     {
         int tok_int = tokToInt(tok); // convert tok to int
+
+        // if tokToInt method returns error
+        if(tok_int == -1) return false;
+
         if(ptr->next[tok_int] == NULL)return false;
         ptr = ptr->next[tok_int]; // move pointer to next location
         tok++;
     }
-
+    // reached end of tok, check to see if word exists
     return (ptr->isEndOfWord) ? true : false;
 }
 
