@@ -1,5 +1,5 @@
 /*
- * spellcheck.c
+ * dictionary.h
  *
  * CS570, spring 2020
  * Carlos Gamino Reyes

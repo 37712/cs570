@@ -43,27 +43,24 @@ int main (int argc, char **argv)
     // populate dictionary
     char str[512];
 	char * tok = NULL;
-	while(fgets(str, 512, (FILE*)fp2))
+	while(fgets(str, 512, (FILE*)fp2)) // reads through file
     {
-        tok = strtok(str, delimiters);
-        if(!insert(tok)) // if failed to insert end program
-        {
+        tok = strtok(str, delimiters); // tokenise the string
+        if(!insert(tok)) // if failed to insert token, print our token
             printf("failed to insert (%s)\n", tok);
-            return -3;
-        }
 	}
 
     // find token
 	char str2[512];
     char tmp[128];
-	while(fgets(str2, 512, (FILE*)fp1))
+	while(fgets(str2, 512, (FILE*)fp1)) // reads through file
     {
-        tok = strtok(str2, delimiters);
+        tok = strtok(str2, delimiters); // tokenise the string
         while (tok != NULL)
         {
             strcpy (tmp,tok); // do not modify original token string
             if(!find(tmp)) printf("%s\n",tok);// if not found, print to stdout
-            tok = strtok(NULL, delimiters);
+            tok = strtok(NULL, delimiters); // tokenise the string
         }
 	}
 

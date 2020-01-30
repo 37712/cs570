@@ -14,6 +14,8 @@
 #include <string.h>		// string manipulation
 #include <ctype.h>      // tolower()
 
+#define Nchars 27 /* a-z + ' 0-25 + 26 */
+
 /************** dictionary tree starts here **************/
 
 //	Note to self:
@@ -21,19 +23,17 @@
 //  DO NOT FORGET TO MAKE BOOL TRUE OR FALSE
 //  DO NOT MESS AROUND WITH ORIGINAL STRING USE A POINTER
 
-#define Nchars 27 /* a-z + ' 0-25 + 26 */
-
 struct dictEntry
 {
 	bool isEndOfWord;// isEndOfWord is true if the node represents the end of a word
-	struct dictEntry *next[Nchars];// make all null if end of word is true
+	struct dictEntry *next[Nchars];// always initialize all children as NULL
 };
 
 // this enables us to just say "dict" instead of "struct dictEntry"
 typedef struct dictEntry * dict; // also, dict is pointer type
 
 // Global variables
-dict root = NULL;
+dict root = NULL; // starting node in dictEntry
 
 // method to help debug;
 void pprint(char *ptr)
@@ -49,18 +49,18 @@ void pprint(char *ptr)
 // make lowercase and convert to range 0 - 26
 int tokToInt(char * tok)
 {
-    // if A - Z, make lowercase
-    if(*tok > 64 && *tok < 91) *tok = tolower(*tok);
-    // if tok is not a lower case letter or a '
+    // make A - Z lowercase
+    *tok = tolower(*tok);
+    // if tok is not a lower case letter or '
     if((*tok < 'a' || *tok > 'z') && *tok != '\'')
     {
         perror("\nError on tokToInt method\n");
         pprint(tok);
-        return -1; // return error = -1
+        return -1; // return error code -1
     }
     // if ' char, return 26
     if(*tok == '\'') return 26;
-    //convert *tok letter char to int from 0 to 25
+    //convert and return *tok letter char to int 0 - 25
     return (int)*tok - 97;
 }
 
@@ -68,7 +68,7 @@ int tokToInt(char * tok)
 bool insert(char * str)
 {
     // create root node and allocate memory
-    if (root == NULL)
+    if(root == NULL)
     {
         root = malloc(sizeof(struct dictEntry)); // allocate memory for root node
         for(int i = 0; i < 27; i++) root->next[i] = NULL; // set all children to NULL
@@ -87,7 +87,7 @@ bool insert(char * str)
         if(tok_int == -1) return false;
 
         // if ptr->next is NULL, create new dictEntry
-        if (ptr->next[tok_int] == NULL)
+        if(ptr->next[tok_int] == NULL)
         {
             ptr->next[tok_int] = malloc(sizeof(struct dictEntry));// allocate memory for new node
             dict tmp = ptr->next[tok_int];
