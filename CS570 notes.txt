@@ -5,7 +5,7 @@ Exam 1 20%
 Exam 2 (final) is not cumulative 20%
 
 Edoras
-Login: misc0230
+Login: misc0230@edoras.sdsu.edu
 Pass: 0K5qL2Aw
 
 ssh misc0230@edoras.sdsu.edu
