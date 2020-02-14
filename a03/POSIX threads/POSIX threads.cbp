@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="small.txt" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -31,7 +32,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Unit filename="wordcount.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

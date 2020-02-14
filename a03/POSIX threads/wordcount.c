@@ -29,27 +29,16 @@ thread is scheduled under these conditions, 80% (40/50ths) of the task has been
 completed. Consequently, .80 * 40 = 32 hyphens should be displayed:
 */
 
-// progress bar method
-void * progress_monitor(void * progStatus)
+void * progress_monitor(void *progress_stat)
 {
-    int currProg;
-    int x;
-
-    // needs casting to work
-    PROGRESS_STATUS * currStatus = (PROGRESS_STATUS *) progStatus;
-
     for(int i = 0; i<40; i++)
-    {   // every 10, print out +
-        if(i % 10 == 0)
-            printf("+");
-        else
-            printf("-");
-    }
+        printf("-");
 }
 
 
 long wordcount(FILE * fp)
 {
+
     long size;
 
     // get file size
