@@ -6,6 +6,7 @@
 *.out
 
 dictionary
+wordcount
 
 ### CodeBlocks ###
 # specific to CodeBlocks IDE
