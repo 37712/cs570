@@ -22,29 +22,34 @@ long TerminationValue;  // value at which the computation is complete
 } PROGRESS_STATUS;
 // TerminationValue >= Progress Indicator >= InitialValue
 
-/*
-As an example of this, let us suppose that InitialValue = 10, TerminationValue
-= 60, and the progress indicator (*CurrentStatus) = 50. If the progress_monitor
-thread is scheduled under these conditions, 80% (40/50ths) of the task has been
-completed. Consequently, .80 * 40 = 32 hyphens should be displayed:
-*/
-
 // progress bar method
 void * progress_monitor(void * progStatus)
 {
-    int currProg;
-    int x;
-
+    printf("C\n");
     // needs casting to work
     PROGRESS_STATUS * currStatus = (PROGRESS_STATUS *) progStatus;
 
-    for(int i = 0; i<40; i++)
-    {   // every 10, print out +
-        if(i % 10 == 0)
-            printf("+");
-        else
-            printf("-");
+    printf("D\n");
+    
+    while(true)
+    {
+        long tmp = (long)(currStatus->CurrentStatus);
+        int progBar = (int)(((float)tmp / (float)currStatus->TerminationValue) * 40);
+        
+        printf("bar = %d\n",progBar);
+        for(int i = 0; i<=progBar; i++)
+        {   // every 10, print out +
+            if(i % 10 == 0 && i != 0)
+                printf("+");
+            else
+                printf("-");
+        }
+        printf("bar = %d",progBar);
+        printf("\n");
+        fflush(stdout); // required
+        if(progBar > 5) break;
     }
+    
 }
 
 
@@ -63,11 +68,15 @@ long wordcount(FILE * fp)
     PROGRESS_STATUS * progStatus = malloc(sizeof(PROGRESS_STATUS));  // allocating memory for pointer
     progStatus->TerminationValue = size;
     progStatus->CurrentStatus = 0;
-
+    
+    printf("A\n");
+    
     // start the thread for the progress bar
     pthread_t progThread;
     pthread_create(&progThread, NULL, progress_monitor, (void *)progStatus);
-
+    
+    printf("B\n");
+    
     //delimiter for strtok
     const char delimiters[] = "\t\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
 
@@ -84,11 +93,11 @@ long wordcount(FILE * fp)
             tok = strtok(NULL, delimiters);
             count++;
         }
+        progStatus->CurrentStatus++; // increase current status
     }
 
-    // house cleaning part - thread join and free the allocated memory
-	pthread_join(progThread,NULL);
-	free(progStatus);
+	pthread_join(progThread,NULL);  // join the thread
+	free(progStatus);   // free memory
 
     return count;
 }

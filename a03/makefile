@@ -23,8 +23,5 @@ wordcount : wordcount.c
 run:
 	./wordcount big.txt
 
-exe:
-	wordcount.exe big.txt
-
 clean :
 	rm *.o

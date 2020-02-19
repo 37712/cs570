@@ -9,26 +9,3 @@ Login: misc0230@edoras.sdsu.edu
 Pass: 0K5qL2Aw
 
 ssh misc0230@edoras.sdsu.edu
-
-Takes two arguments file
-
-Array of pointers for dictionary tree
-Best if recursive
-
-Diff for comparison
-
-~bshen/cs570/a01
-
-Assignment 1
-First implement a dictionary tree
-Must fill out the affidavit
-
-need to create a dictionary tree structure 
-alphabet:
-a = 0
-b = 1
-c = 2
-etc
-maybe -> Array of pointers for dictionary tree
-
-
