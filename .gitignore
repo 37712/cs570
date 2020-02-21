@@ -7,6 +7,7 @@
 
 dictionary
 wordcount
+stackdump
 
 ### CodeBlocks ###
 # specific to CodeBlocks IDE

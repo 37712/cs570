@@ -2,22 +2,25 @@
  * wordcount.c
  *
  * CS570, spring 2020
+ *
  * Carlos Gamino Reyes
  * misc0230@edoras.sdsu.edu
  * 819230978
  *
+ *Tan Truong
+ *misc0308@edoras.sdsu.edu
+ *821006778
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
+#include <ctype.h>      // needed for isspace
 #include <pthread.h>    // needed to use pthread
 
 // structure for progress status
 typedef struct {
 long * CurrentStatus;   // represents the current status of the computation being tracked (progress indicator)
-long InitialValue;      // starting value for the computation
+long InitialValue;      // not needed, useless variable
 long TerminationValue;  // value at which the computation is complete
 } PROGRESS_STATUS;
 // TerminationValue >= Progress Indicator >= InitialValue
@@ -25,31 +28,28 @@ long TerminationValue;  // value at which the computation is complete
 // progress bar method
 void * progress_monitor(void * progStatus)
 {
-    printf("C\n");
+    int progBar = 0;
+    int i = 0;
     // needs casting to work
-    PROGRESS_STATUS * currStatus = (PROGRESS_STATUS *) progStatus;
+    PROGRESS_STATUS * tmp = (PROGRESS_STATUS *) progStatus;
 
-    printf("D\n");
-    
-    while(true)
+    while(progBar < 40)
     {
-        long tmp = (long)(currStatus->CurrentStatus);
-        int progBar = (int)(((float)tmp / (float)currStatus->TerminationValue) * 40);
-        
-        printf("bar = %d\n",progBar);
-        for(int i = 0; i<=progBar; i++)
+        // calculating progress of the bar
+        progBar = (int)(((long)tmp->CurrentStatus / (float)tmp->TerminationValue) * 40);
+
+        // makes the bar
+        while(i<=progBar)
         {   // every 10, print out +
             if(i % 10 == 0 && i != 0)
                 printf("+");
             else
                 printf("-");
+            fflush(stdout); // required
+            i++;
         }
-        printf("bar = %d",progBar);
-        printf("\n");
-        fflush(stdout); // required
-        if(progBar > 5) break;
     }
-    
+    printf("\n");
 }
 
 
@@ -62,42 +62,33 @@ long wordcount(FILE * fp)
     size = ftell(fp);           // get current file pointer
     rewind(fp);                 // rewind back to beginning of file
 
-    printf("size = %lu\n",size);
-
     // initializing program status
-    PROGRESS_STATUS * progStatus = malloc(sizeof(PROGRESS_STATUS));  // allocating memory for pointer
-    progStatus->TerminationValue = size;
+    PROGRESS_STATUS * progStatus = malloc(sizeof(PROGRESS_STATUS));  // create and allocating memory for pointer
     progStatus->CurrentStatus = 0;
-    
-    printf("A\n");
-    
+    progStatus->TerminationValue = size;
+
     // start the thread for the progress bar
     pthread_t progThread;
     pthread_create(&progThread, NULL, progress_monitor, (void *)progStatus);
-    
-    printf("B\n");
-    
-    //delimiter for strtok
-    const char delimiters[] = "\t\n\r !\"#$%&()*+,-./0123456789:;<=>?@[\\]^_`{|}~";
 
-    // counting number of words in file
-    char str[512];
-    char * tok = NULL;
+    // needed to count number of words in file
+    char ptr, pre;
     long count = 0;
-    while(fgets(str, 512, (FILE*)fp))
+
+    // while ptr does not reach end of file
+    while(ptr != EOF)
     {
-        tok = strtok(str, delimiters); // tokenise the string
-        while (tok != NULL)
-        {
-            //printf("%s\n",tok);
-            tok = strtok(NULL, delimiters);
-            count++;
-        }
+        ptr = getc(fp); // get character
         progStatus->CurrentStatus++; // increase current status
+
+        // count anything that is separated by white space
+        if(!isspace(pre) && isspace(ptr)) count++;
+
+        pre = ptr; // give previous location to pre
     }
 
-	pthread_join(progThread,NULL);  // join the thread
-	free(progStatus);   // free memory
+	pthread_join(progThread,NULL);  // proper way to end a thread
+	free(progStatus);   // never forget to free pointer memory
 
     return count;
 }
@@ -120,8 +111,7 @@ int main(int argc,char **argv)
 		return -2;
 	}
 
-    printf("There are %lu words in file %s\n", wordcount(fp), argv[1]);
-
+    printf("There are %lu words in %s\n", wordcount(fp), argv[1]);
 
     // never forget to close opened files
 	fclose(fp);
