@@ -4,6 +4,7 @@
 *.core
 *.exe
 *.out
+~*
 
 dictionary
 wordcount

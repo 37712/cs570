@@ -20,9 +20,9 @@
 
 // structure for progress status
 typedef struct {
-long * CurrentStatus;   // represents the current status of the computation being tracked (progress indicator)
+long * CurrentStatus;   // start value, this is a pointer value
 long InitialValue;      // not needed, useless variable
-long TerminationValue;  // value at which the computation is complete
+long TerminationValue;	// end value
 } PROGRESS_STATUS;
 // TerminationValue >= Progress Indicator >= InitialValue
 
@@ -37,7 +37,7 @@ void * progress_monitor(void * progStatus)
     while(progBar < 40)
     {
         // calculating progress of the bar
-        progBar = (int)(((long)tmp->CurrentStatus / (float)tmp->TerminationValue) * 40);
+        progBar = (int)((*tmp->CurrentStatus / (float)tmp->TerminationValue) * 40);
 
         // makes the bar
         while(i<=progBar)
@@ -57,15 +57,17 @@ void * progress_monitor(void * progStatus)
 long wordcount(FILE * fp)
 {
     long size;
+	long curr = 0;
 
     // get file size
     fseek(fp, 0, SEEK_END);     // go to the end of the file
     size = ftell(fp);           // get current file pointer
     rewind(fp);                 // rewind back to beginning of file
+	
 
     // initializing program status
     PROGRESS_STATUS * progStatus = malloc(sizeof(PROGRESS_STATUS));  // create and allocating memory for pointer
-    progStatus->CurrentStatus = 0;
+    progStatus->CurrentStatus = &curr;
     progStatus->TerminationValue = size;
 
     // start the thread for the progress bar
@@ -80,7 +82,7 @@ long wordcount(FILE * fp)
     while(ptr != EOF)
     {
         ptr = getc(fp); // get character
-        progStatus->CurrentStatus++; // increase current status
+		curr++;
 
         // count anything that is separated by white space
         if(!isspace(pre) && isspace(ptr)) count++;
