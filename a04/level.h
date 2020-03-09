@@ -15,10 +15,23 @@
 #ifndef LEVEL_H_INCLUDED
 #define LEVEL_H_INCLUDED
 
-#include <pagetable.h>
-#include <map.h>
+#include "pagetable.h"
+#include "map.h"
 
+// level table
 
+struct LEVEL
+{
+    PageTable pagetablepointer; // points back to the pagetable
+    int depth;
+
+    // next level is aither level or map type
+    struct LEVEL * nextlevel;
+    struct MAP * maplevel;
+};
+
+// insert next level
+bool insertLVL(unsigned int LogicalAddress, unsigned int Frame);
 
 
 #endif // LEVEL_H_INCLUDED

@@ -15,14 +15,17 @@
 #ifndef MAP_H_INCLUDED
 #define MAP_H_INCLUDED
 
-// structure of map and funtions
+// structure of leaf table, not a level itself
 
-struct map
+struct MAP
 {
-    
+    int depth;
+    int * frameArray;
 };
 
+int getframe(int pagenumber);
 
+bool insertpage(int pagenumber, int framenumber);
 
 
 #endif // MAP_H_INCLUDED

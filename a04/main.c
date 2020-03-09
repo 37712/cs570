@@ -17,8 +17,8 @@
 #include <unistd.h>     // needed for getopt
 #include <stdbool.h>    // needed for bool
 
-#include <pagetable.h>
-#include <byutr.h>
+#include "pagetable.h"
+#include "byutr.h"
 
 /*
  *  IMPORTANT:
@@ -57,7 +57,7 @@ int main(int argc, char ** argv)
 
             case 'p': /* produce map of pages */
                 p = true;
-                filetowrite = optarg;
+                filetowrite = optarg; // file to write to
                 break;
 
             case 't': /* Show address translation */
@@ -105,8 +105,18 @@ int main(int argc, char ** argv)
     return 0;
 }
 
-unsigned int logicaltopage
-    (unsigned int logicaladdress, unsigned int mask, unsigned int shift)
+unsigned int LogicalToPage
+    (unsigned int LogicalAddress, unsigned int Mask, unsigned int Shift)
 {
-    return (logicaladdress & mask) >> shift;
+    return (LogicalAddress & Mask) >> Shift;
 }
+
+
+// Used to add new entries to the page table when we have discovered that 
+// a page has not yet been allocated
+void PageInsert
+    (PageTable pagetable, unsigned int LogicalAddress, unsigned int Frame)
+{
+
+}
+

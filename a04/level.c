@@ -12,4 +12,9 @@
  * 821006778
  */
 
-#include <level.h>
+#include "level.h"
+
+bool insert(unsigned int logicalAddress, unsigned int frame)
+{
+    return false;
+}

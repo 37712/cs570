@@ -16,20 +16,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <pagetable.h>
-#include <level.h>
+#include "pagetable.h"
+#include "level.h"
 
 
-pagetable rootpagetable = NULL; // this is a pointer
+PageTable rootPageTable = NULL; // this is a pointer
 
-bool insert()
+bool insertPT(unsigned int LogicalAddress, unsigned int Frame)
 {
     // if root is NULL create root and allocate memory
-    if(rootpagetable == NULL)
-    {
-        rootpagetable = malloc(sizeof(struct page_table));
-    }
-    return false;
+    if(rootPageTable == NULL)
+        rootPageTable = malloc(sizeof(struct PAGETABLE));
+    return insertLVL(LogicalAddress, Frame); // sent to sinrt in level file and return value
 }
 
 int getframenumber(unsigned int )

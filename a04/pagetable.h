@@ -17,23 +17,23 @@
 
 #include "level.h"
 
-// page table contains information about the tree
+// page table contains information about the tree, but is not part of tree itself
 
-struct page_table
+struct PAGETABLE
 {
+    struct PAGETABLE * rootnode;   // pointer to level 0 page table
+    
     unsigned int levelCount;        // number of levels
     unsigned int * BitmaskArray;    // bit mask for each level
     unsigned int * ShiftArray;      // number of bits to shift each level page bits
-    unsigned int * entryCountArray; //
-
-    struct page_table * rootnode;   // pointer to level 0 page table
+    unsigned int * entryCountArray; // number of possible pages for level i
 };
 
-// this enables us to just say "pagetable" instead of "struct page_table"
-typedef struct page_table * pagetable; // this is pointer type
+// this enables us to just say "PageTable" instead of "struct PAGETABLE"
+typedef struct PAGETABLE * PageTable; // this is pointer type
 
 // funtion declarations
-bool insert(char * str); // insert word
+bool insertPT(unsigned int LogicalAddress, unsigned int Frame);
 
 
 #endif // PAGETABLE_H_INCLUDED
