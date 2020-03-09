@@ -106,7 +106,7 @@ int main(int argc, char ** argv)
 }
 
 unsigned int logicaltopage
-(unsigned int logicaladdress, unsigned int mask, unsigned int shift)
+    (unsigned int logicaladdress, unsigned int mask, unsigned int shift)
 {
     return (logicaladdress & mask) >> shift;
 }

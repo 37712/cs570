@@ -17,12 +17,16 @@
 
 #include "level.h"
 
+// page table contains information about the tree
+
 struct page_table
 {
     unsigned int levelCount;        // number of levels
     unsigned int * BitmaskArray;    // bit mask for each level
     unsigned int * ShiftArray;      // number of bits to shift each level page bits
     unsigned int * entryCountArray; //
+
+    struct page_table * rootnode;   // pointer to level 0 page table
 };
 
 // this enables us to just say "pagetable" instead of "struct page_table"

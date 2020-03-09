@@ -1,7 +1,7 @@
 /*
  * CS570, spring 2020
  *
- * map.c
+ * map.h
  * 
  * Carlos Gamino Reyes
  * misc0230@edoras.sdsu.edu
@@ -12,5 +12,17 @@
  * 821006778
  */
 
-#include <map.h>
+#ifndef MAP_H_INCLUDED
+#define MAP_H_INCLUDED
 
+// structure of map and funtions
+
+struct map
+{
+    
+};
+
+
+
+
+#endif // MAP_H_INCLUDED
