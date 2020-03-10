@@ -88,18 +88,6 @@ int main(int argc, char ** argv)
         bitcount += bitsperpage[i] = atoi(argv[optind]);
     }
 
-    // bit address size check
-    if (bitcount > 32)
-    {
-        printf("Bit address size is greater than 32\n");
-        return -3;
-    }
-    else if (bitcount == 0)
-    {
-        printf("Bit address size was not given");
-        return -4;
-    }
-
  
 
     return 0;

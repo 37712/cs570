@@ -15,17 +15,23 @@
 #ifndef MAP_H_INCLUDED
 #define MAP_H_INCLUDED
 
-// structure of leaf table, not a level itself
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+// array wich maps from logical page to physical frame
 
 struct MAP
 {
-    int depth;
-    int * frameArray;
+    int size; // size of array
+    int * frameArray; // array
 };
 
-int getframe(int pagenumber);
+// insert page
+bool insertframe(struct MAP * map, int pageindex, int frame);
 
-bool insertpage(int pagenumber, int framenumber);
+int getframe(struct MAP * map, int pageindex);
 
 
 #endif // MAP_H_INCLUDED

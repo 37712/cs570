@@ -12,15 +12,11 @@
  * 821006778
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #include "pagetable.h"
 #include "level.h"
 
 
-PageTable rootPageTable = NULL; // this is a pointer
+
 
 bool insertPT(unsigned int LogicalAddress, unsigned int Frame)
 {
