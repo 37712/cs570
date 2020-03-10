@@ -25,12 +25,12 @@
 
 struct PAGETABLE
 {
-    struct PAGETABLE * RootLevelPtr;   // pointer to level 0 page table
+    struct LEVEL * RootLevelPtr;    // pointer to level 0 page table
     
     unsigned int levelCount;        // number of levels
-    unsigned int * BitmaskArray;    // size of each level and map array
-    unsigned int * ShiftArray;      // number of bits to shift each level page bits
-    unsigned int * entryCountArray; // number of possible pages for level i
+    unsigned int * BitmaskArray;    // mask for eavh level {0xFF000000, 0x00FF0000, 0x0000FF00}
+    unsigned int * ShiftArray;      // number of bits to shift each level page bits {24, 16, 8}
+    unsigned int * CountArray;      // number of possible pages for level i {2^8, 2^8, 2^8}
 };
 
 // this enables us to just say "PageTable" instead of "struct PAGETABLE"
@@ -39,7 +39,7 @@ typedef struct PAGETABLE * PageTable; // this is pointer type
 PageTable rootPageTable = NULL; // this is a pointer
 
 // funtion declarations
-bool insertPT(unsigned int LogicalAddress, unsigned int Frame);
+//bool insertPT(unsigned int LogicalAddress, unsigned int Frame);
 
 
 #endif // PAGETABLE_H_INCLUDED

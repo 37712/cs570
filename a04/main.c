@@ -67,39 +67,60 @@ int main(int argc, char ** argv)
     }
 
     // get name of file to read from
-    filetoread = argv[optind++];
+    filetoread = argv[optind++]; // ++ moves the index to the next argument
 
-    // open text file
-    FILE *fp = fopen(filetoread, "rb"); // 'rb' read binary
+    // open trace file
+    FILE * tracefile = fopen(filetoread, "rb"); // 'rb' read binary
 
     // check that file opened successfully
-    if (fp == NULL)
+    if (tracefile == NULL)
     {
 		printf("Failed to open or find %s!\n", filetoread);
 		return -2;
 	}
 
-    // get  number of levels and number of bits per page
-    int levels =  argc - optind;
-    int bitsperpage[levels];
+    printf("reading = %s\n", argv[optind]);
+    printf("index = %d\n", optind);
+    printf("number of arguments = %d\n", argc);
+
+    
+
+    // get number of levels and number of bits per page
+    int levelCount =  argc - optind;    // number of levels in tree
+    printf("level = %d\n", levelCount);
+    int bitsperpage[levelCount];
     int bitcount = 0;
+
+
+
+    // allocate memory for root page table
+    rootPageTable = malloc(sizeof(struct PAGETABLE)); // rootPageTable is global variable
+    rootPageTable->levelCount = levelCount;
+    rootPageTable->BitmaskArray = malloc(sizeof(levelCount));
+
+    
+
+
     for(int i = 0; optind < argc; i++, optind++)
     {
         bitcount += bitsperpage[i] = atoi(argv[optind]);
     }
 
  
-
+    fclose(tracefile); // never forget to close opened files
     return 0;
 }
 
+
+
+//  LogicalAddress to page number
 unsigned int LogicalToPage
     (unsigned int LogicalAddress, unsigned int Mask, unsigned int Shift)
 {
     return (LogicalAddress & Mask) >> Shift;
 }
 
-
+/*
 // Used to add new entries to the page table when we have discovered that 
 // a page has not yet been allocated
 void PageInsert
@@ -107,4 +128,4 @@ void PageInsert
 {
 
 }
-
+*/

@@ -17,6 +17,9 @@
 #include <stdbool.h>
 
 #include "level.h"
+#include "pagetable.h" // needed to be able to point back
+#include "map.h" // needed to be able to initialize the map structure
+
 
 bool insertLVL(unsigned int logicalAddress, unsigned int frame)
 {

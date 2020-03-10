@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     // Grabe the next address
     int bytesread = NextAddress(fp, &trace_item);
     // Check if we actually got something
-    done = bytesread == 0;
+    done = (bytesread == 0);
     if (! done) 
       printf("Address %x\n", trace_item.addr);
   }
