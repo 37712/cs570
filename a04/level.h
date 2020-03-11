@@ -22,8 +22,8 @@
 
 struct LEVEL
 {
-    PageTable pagetablepointer; // points back to the pagetable
-
+    
+    
     int depth;
 
     // next level is aither level or map type

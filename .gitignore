@@ -1,10 +1,11 @@
-### other
+### files to ignore
 *.o
 *.swp
 *.core
 *.exe
 *.out
 ~*
+*.stackdump
 
 dictionary
 wordcount

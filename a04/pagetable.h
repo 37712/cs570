@@ -30,7 +30,7 @@ struct PAGETABLE
     unsigned int levelCount;        // number of levels
     unsigned int * BitmaskArray;    // mask for eavh level {0xFF000000, 0x00FF0000, 0x0000FF00}
     unsigned int * ShiftArray;      // number of bits to shift each level page bits {24, 16, 8}
-    unsigned int * CountArray;      // number of possible pages for level i {2^8, 2^8, 2^8}
+    unsigned int * EntryCount;      // number of possible pages for level i {2^8, 2^8, 2^8}
 };
 
 // this enables us to just say "PageTable" instead of "struct PAGETABLE"
