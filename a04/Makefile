@@ -13,11 +13,11 @@
 CC = gcc
 CCFLAGS=-std=c11
 
-pagetable: main.c pagetable.o level.o map.o byu.o
+pagetable: main.c pagetable.o level.o map.o byutr.o
 	${CC} ${CCFLAGS} -o pagetable main.c pagetable.o level.o map.o byu.o
 	
-byu.o: byu.c byu.h
-	${CC} ${CCFLAGS} -o byu.o -c byu.c
+byutr.o: byu_tracereader.c byutr.h
+	${CC} ${CCFLAGS} -o byutr.o -c byu_tracereader.c
 	
 pagetable.o: pagetable.c pagetable.h
 	${CC} ${CCFLAGS} -c pagetable.c

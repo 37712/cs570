@@ -36,10 +36,10 @@ struct PAGETABLE
 // this enables us to just say "PageTable" instead of "struct PAGETABLE"
 typedef struct PAGETABLE * PageTable; // this is pointer type
 
-PageTable rootPageTable = NULL; // this is a pointer
+PageTable pagetable = NULL; // this is a global pointer
 
 // funtion declarations
-//bool insertPT(unsigned int LogicalAddress, unsigned int Frame);
+bool insertPT(unsigned int LogicalAddress, unsigned int Frame);
 
 
 #endif // PAGETABLE_H_INCLUDED

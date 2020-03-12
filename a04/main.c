@@ -30,8 +30,11 @@
 unsigned int LogicalToPage
     (unsigned int LogicalAddress, unsigned int Mask, unsigned int Shift);
 
-// allocate memory for page table and assigne bits to pagatable structure
+// allocate memory for the structure and populate page table
 void createPageTable(int argc, char ** argv);
+
+//Inserts into Page Table, returns Hit/Miss
+bool pageInsert(unsigned int logicalAddr, unsigned int frame);
 
 int main(int argc, char ** argv)
 {
@@ -45,7 +48,6 @@ int main(int argc, char ** argv)
     // needed variables
     int N;      // Number of memory references
     int Option;
-    char * filetoread;  // name of file to read from
     char * filetowrite; // name of file to write to
     // optional arguments
     bool n = false; // Number of memory references
@@ -73,16 +75,13 @@ int main(int argc, char ** argv)
         }
     }
 
-    // get name of file to read from
-    filetoread = argv[optind++]; // ++ moves the index to the next argument
-
-    // open trace file
-    FILE * tracefile = fopen(filetoread, "rb"); // 'rb' read binary
+    // open trace file, 'r' read, optind++ to move to next index
+    FILE * tracefile = fopen(argv[optind++], "r");
 
     // check that file opened successfully
     if (tracefile == NULL)
     {
-		printf("Failed to open or find %s!\n", filetoread);
+		printf("Failed to open or find %s!\n", optind-1);
 		return -2;
 	}
 
@@ -92,9 +91,34 @@ int main(int argc, char ** argv)
 
 
 
-    // allocate memory for page table and assigne bits to pagatable structure
+    // allocate memory and populate page table structure with arguments
     createPageTable(argc, argv); // optid is global variable
     
+    // Start reading addresses from trace file
+    p2AddrTr trace_item;
+    bool done = false;
+    unsigned int hits = 0;      //??????
+    unsigned int misses = 0;    //??????
+
+    // testing
+    NextAddress(tracefile, &trace_item);
+    pageInsert(trace_item.addr, hits++);
+
+    /*
+    while (! done)
+    {
+        if(NextAddress(tracefile, &trace_item)) // fails if NextAddress returns 0
+        {
+            printf("Address %x\n", trace_item.addr);
+            if(pageInsert(trace_item.addr, ))
+            {
+
+            }
+
+        }
+        
+    }
+    */
     
 
     
@@ -102,11 +126,29 @@ int main(int argc, char ** argv)
  
     fclose(tracefile); // never forget to close opened files
     return 0;
+
+    //  END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN
+}   //  END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN
+    //  END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN
+
+bool pageInsert(unsigned int logicalAddr, unsigned int frame)
+{
+    if(insertPT(logicalAddr, frame)) return true;
+    return false;
 }
 
-// allocate memory for page table and assigne bits to pagatable structure
+//  LogicalAddress to page number
+unsigned int LogicalToPage
+    (unsigned int LogicalAddress, unsigned int Mask, unsigned int Shift)
+{
+    return (LogicalAddress & Mask) >> Shift;
+}
+
+// allocate memory and populate page table structure
 void createPageTable(int argc, char ** argv)
 {
+    
+
     // get number of levels and number of bits per page
     int levelCount =  argc - optind;    // number of levels in tree
     printf("number of levels = %d\n", levelCount);
@@ -124,23 +166,26 @@ void createPageTable(int argc, char ** argv)
     printf("pagebits = %u\n", 32 - offset);
     
     // allocate memory for root page table
-    rootPageTable = malloc(sizeof(struct PAGETABLE)); // rootPageTable is global variable
-    
-    rootPageTable->levelCount = levelCount;
-    
-    // the  +1  is to make space for the offset
-    rootPageTable->BitmaskArray = malloc(sizeof(int) * (levelCount +1));
-    rootPageTable->ShiftArray = malloc(sizeof(int) * (levelCount +1));
-    rootPageTable->EntryCount = malloc(sizeof(int) * (levelCount +1));
+    pagetable = malloc(sizeof(struct PAGETABLE)); // pagetable is global variable
 
     
-    //[Level Count] matches with the offset bits
-    // entering offset at level count 
-    rootPageTable->BitmaskArray[levelCount] = (unsigned int) ((1 << offset) - 1);
-    rootPageTable->ShiftArray[levelCount] = 0; // no shifting needed for offset
-    //Page Size
-    rootPageTable->EntryCount[levelCount] = (unsigned int) (1 << offset);
     
+    pagetable->levelCount = levelCount;
+    
+    // the  +1  is to make space for the offset
+    pagetable->BitmaskArray = malloc(sizeof(int) * (levelCount +1));
+    pagetable->ShiftArray = malloc(sizeof(int) * (levelCount +1));
+    pagetable->EntryCount = malloc(sizeof(int) * (levelCount +1));
+
+    
+    // entering offset at level count - START
+    //[Level Count] matches with the offset bits
+    pagetable->BitmaskArray[levelCount] = (unsigned int) ((1 << offset) - 1);
+    pagetable->ShiftArray[levelCount] = 0; // no shifting needed for offset
+    //Page Size
+    pagetable->EntryCount[levelCount] = (unsigned int) (1 << offset);
+    // entering offset at level count - END
+
     
     unsigned int cumulativeBitCount = offset;
     unsigned int bitMask;
@@ -148,27 +193,24 @@ void createPageTable(int argc, char ** argv)
     {
         bitMask = (unsigned int) (1 << bitsPerLevel[i]) - 1; // this make the FF
         
-        rootPageTable->BitmaskArray[i] = bitMask << cumulativeBitCount; // shifts the FF
-        rootPageTable->ShiftArray[i] = cumulativeBitCount;
-        rootPageTable->EntryCount[i] = (unsigned int) 1 << bitsPerLevel[i]; // same as 2 ^ number of bits
-        printf("entrycount = %u, %x\n",rootPageTable->EntryCount[i],rootPageTable->EntryCount[i]);
+        pagetable->BitmaskArray[i] = bitMask << cumulativeBitCount; // shifts the FF
+        pagetable->ShiftArray[i] = cumulativeBitCount;
+        pagetable->EntryCount[i] = (unsigned int) 1 << bitsPerLevel[i]; // same as 2 ^ number of bits
+        printf("entrycount = %u, %x\n",pagetable->EntryCount[i],pagetable->EntryCount[i]);
         cumulativeBitCount += bitsPerLevel[i];
     }
+
+    // allocate memory and set varibales for RootLevelPtr
+    pagetable->RootLevelPtr = malloc(sizeof(struct LEVEL));
+    pagetable->RootLevelPtr->depth = 0;
+    pagetable->RootLevelPtr->NextLevelPtr = malloc(sizeof(struct LEVEL) * pagetable->EntryCount[0]);
+    pagetable->RootLevelPtr->MapPtr = NULL;
+    // make all entries NULL at start
+    for(int j = 0; j < pagetable->EntryCount[0]; j++)
+        pagetable->RootLevelPtr->NextLevelPtr[j] = NULL;
 }
 
-//  LogicalAddress to page number
-unsigned int LogicalToPage
-    (unsigned int LogicalAddress, unsigned int Mask, unsigned int Shift)
-{
-    return (LogicalAddress & Mask) >> Shift;
-}
 
-/*
-// Used to add new entries to the page table when we have discovered that 
-// a page has not yet been allocated
-void PageInsert
-    (PageTable pagetable, unsigned int LogicalAddress, unsigned int Frame)
-{
 
-}
-*/
+
+

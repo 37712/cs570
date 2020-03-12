@@ -31,8 +31,10 @@ int main(int argc, char **argv) {
 
   /* Start reading addresses */
   p2AddrTr trace_item;  /* Structure with trace information */
-  bool done = false;
-  while (! done) {
+  
+  bool done = false; 
+  while (! done)
+  {
     // Grabe the next address
     int bytesread = NextAddress(fp, &trace_item);
     // Check if we actually got something
@@ -40,4 +42,5 @@ int main(int argc, char **argv) {
     if (! done) 
       printf("Address %x\n", trace_item.addr);
   }
+  
 }

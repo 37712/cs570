@@ -20,10 +20,6 @@
 
 bool insertPT(unsigned int LogicalAddress, unsigned int Frame)
 {
-    // if root is NULL create root and allocate memory
-    if(rootPageTable == NULL)
-        initializePT();
-        
     return insertLVL(LogicalAddress, Frame); // sent to sinrt in level file and return value
 }
 

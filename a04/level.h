@@ -22,19 +22,16 @@
 
 struct LEVEL
 {
-    
-    
     int depth;
 
-    // next level is aither level or map type
+    // next level is level or map type
     struct LEVEL ** NextLevelPtr; // pointer to an array
     struct MAP * MapPtr; // pointer to the map structure
+    // pagetable pointer is global varaibale
 };
 
-// this enables us to just say "PageTable" instead of "struct PAGETABLE"
-typedef struct LEVEL * Level; // this is pointer type
-
-Level rootLevel = NULL; // this is a pointer
+// this enables us to just say "Level" instead of "struct LEVEL"
+typedef struct LEVEL * Level; // this is pointer
 
 // insert next level
 bool insertLVL(unsigned int LogicalAddress, unsigned int Frame);
