@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>     // needed for getopt and optind
 #include <stdbool.h>    // needed for bool
-#include <getopt.h>
+#include <getopt.h>     // for linux compilation
 
 #include "pagetable.h"
 #include "byutr.h"
