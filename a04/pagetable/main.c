@@ -26,7 +26,9 @@
  *  MUST COME FIRST WHEN RUNNING THE EXE
  */
 
-bool pHandler(char * filetowrite);
+bool pHandler(char * writefile);
+
+bool tHandler(unsigned int LogicalAddress);
 
 int main(int argc, char ** argv)
 {
@@ -39,9 +41,9 @@ int main(int argc, char ** argv)
 
     // needed variables
     int N;      // Number of memory references
-    int Option;
-    char * filetowrite; // name of file to write to
-    // optional arguments
+    int Option; // option value index
+    char * writefile; // name of file to write to
+    // option arguments
     bool n = false; // Number of memory references
     bool p = false; // print to file
     bool t = false; // show logical to phisical translation
@@ -58,7 +60,7 @@ int main(int argc, char ** argv)
 
             case 'p': /* produce map of pages */
                 p = true;
-                filetowrite = optarg; // file to write to
+                writefile = optarg; // file to write to
                 break;
 
             case 't': /* Show address translation */
@@ -67,7 +69,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    // open trace file, 'r' read, optind++ to move to next index
+    // open trace file, 'rb' read binary, optind++ to move to next index
     FILE * tracefile = fopen(argv[optind++], "rb"); // rb = read binary b/c this is not a text file
 
     // check that file opened successfully
@@ -82,18 +84,17 @@ int main(int argc, char ** argv)
 
     // Start reading and inserting addresses from trace file
     p2AddrTr trace_item; // not pointer
-    unsigned int hit = 0;      // hit counter
-    unsigned int miss = 0;      // miss counter
-    unsigned int frames;
-    int count = 0;
+    int hit = 0;      // hit counter
+    int frame = 0;
+    int count = 0;  // counts num
     while(!feof(tracefile)) // b/c byu uses fread()
     {
         // get next address
         NextAddress(tracefile, &trace_item);
 
-        if(PageInsert(trace_item.addr, frames))
+        if(PageInsert(trace_item.addr, frame))
         {
-            frames++;
+            frame++; // same as miss
         }
         else
         {
@@ -104,41 +105,48 @@ int main(int argc, char ** argv)
         // -t option handler
         if(t)
         {
-
+            // print physical address translation
+            tHandler(trace_item.addr);
         }
 
         // -n option handler
-        if(count >= N && n) // if N memory addresses have been processed
-        {
-            printf("N break has been reached\n");
+        if(n && count >= N) // if -n N memory addresses have been processed
             break;
-        }
-    }
+
+    } // end insertion
 
     // p option handler
-    if(p)
-    {
-        if(!pHandler(filetowrite))
-            return -3;
-    }
+    if(p && !pHandler(writefile)) return -3;
 
+    //summary
+    printf("Page size: %u\n", pagetable->EntryCount[pagetable->levelCount]);
+    printf("Hits %d (%.2f%%)", hit, (float)hit/count * 100);
+    printf(", Misses %d (%.2f%%)", count - hit, (float)(count - hit)/count * 100);
+    printf(" # Addresses %d\n", count);
+    printf("Bytes used: %d\n", sizeofpagetable());
 
-
-
-
-
-
-
-    fclose(tracefile); // never forget to close opened files
-
-    printf("THE END, count = %d\n", count);
+    // never forget to close opened files
+    fclose(tracefile);
     return 0;
+}
 
-    //  END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN
-}   //  END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN
-    //  END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN, END OF MAIN
+// -t, print logical and physical address translation.
+bool tHandler(unsigned int LogicalAddress)
+{
+    // get the actual frame, not map table
+    int frame = PageLookup(LogicalAddress);
 
-// dump page table to file
+    // frame + offset = physical address
+    // creates the frame
+    int physicalAddress = frame * pagetable->EntryCount[pagetable->levelCount];
+    // creates the offset
+    physicalAddress += LogicalAddress & pagetable->BitmaskArray[pagetable->levelCount];
+
+    printf("%08X -> %08X\n", LogicalAddress, physicalAddress);
+    return true;
+}
+
+// -p, dump page table to file
 bool pHandler(char * filetowrite)
 {
     FILE * writefile = fopen(filetowrite, "w+"); // w = write
@@ -150,47 +158,60 @@ bool pHandler(char * filetowrite)
 		return false;
 	}
 
-    int pagemax = 1 << pagetable->pagesize; // creates the max address that the page can be
+    // max address value of page address
+    int pagemax = 1 << pagetable->pagesize;
 
+    // makes offset
+    int offset = pagetable->ShiftArray[pagetable->levelCount - 1];
+    bool skip = false;
+    int frame;
+    int depth;
+    unsigned int address;
+    unsigned int bitMask;
+    unsigned int shift;
+    unsigned int levelindex;
+    Level ptr; // pointer to traverse the page table structure
+    for (int i = 0; i < pagemax; i++)
+    {
+        skip = false; // reset skip
+        ptr = pagetable->RootLevelPtr; // reset pointer
+        address = i << offset; // creates address
 
-    // makes
-    int pageoffset = pagetable->ShiftArray[pagetable->levelCount - 1];
-
-    printf("pageoffset = %d\n", pageoffset);
-
-    int frameNumber;
-    int logicalAddress;
-
-    unsigned int bitMask = pagetable->BitmaskArray[depth];
-    unsigned int shift = pageTablePtr->levelShiftArray[depth];
-    unsigned int location = (logicalAddress & bitMask) >> shift;
-
-    for (int i = 0; i < pagemax; i++) {
-
-        logicalAddress = i << pageoffset; // creates page address to with respect to i
-        // use pagenumber as logicalAddress to search
-
-        frameNumber = pt->getFrameNumber(pageNumber);
-        //Only print valid frames once
-        if (frameNumber != INVALID)
+        //traversing the level structure
+        for(depth = 0; depth < pagetable->levelCount - 1; depth++)
         {
-            if (!frameNumberOutputed[frameNumber])
+            // get index for current depth
+            bitMask = pagetable->BitmaskArray[depth];
+            shift = pagetable->ShiftArray[depth];
+            levelindex = (address & bitMask) >> shift; // index for next level
+
+            // move ptr to next level if not NULL
+            if(ptr->NextLevelPtr[levelindex] != NULL)
             {
-                // write to file
-                fprintf(filePointer, "%08X -> %08X\n", i, frameNumber);
-                frameNumberOutputed[frameNumber] = true;
+                ptr = ptr->NextLevelPtr[levelindex];
+            }
+            else
+            {
+                skip = true;
+                break;
             }
         }
 
+        // if it ptr is null, skip current address
+        if (skip) continue;
+
+        // pointer is now pointing to last level
+
+        bitMask = pagetable->BitmaskArray[depth];
+        shift = pagetable->ShiftArray[depth];
+        levelindex = (address & bitMask) >> shift; // index for map array
+
+        frame = getframe(ptr->MapPtr, levelindex);
+
+        // if frame is valid, write to file
+        if(frame >= 0) fprintf(writefile, "%08X -> %08X\n", i, frame);
     }
 
-
-
-    //printf(filePointer, "%08X -> %08X\n", i, frameNumber);
-
-    fclose(writefile);
-
+    fclose(writefile); // never forget to close opened files
     return true;
 }
-
-

@@ -21,7 +21,7 @@ unsigned int LogicalToPage(unsigned int LogicalAddress, unsigned int Mask, unsig
 }
 
 // traverse levels to reach the map and insert frame
-bool insertLVL(unsigned int LogicalAddress, unsigned int frame)
+bool insertLVL(unsigned int LogicalAddress, int frame)
 {
     // allocates memory and sets variables for root level
     if(pagetable->RootLevelPtr == NULL)
@@ -47,9 +47,6 @@ bool insertLVL(unsigned int LogicalAddress, unsigned int frame)
         if(ptr->NextLevelPtr == NULL) // if level is NULL allocate memory
         {
             ptr->NextLevelPtr = malloc(sizeof(struct LEVEL) * pagetable->EntryCount[i]);
-            //printf("pagetable->EntryCount[i] = %d\n",pagetable->EntryCount[i]);
-            //printf("sizeof(struct LEVEL) = %d\n",sizeof(struct LEVEL));
-            //printf("sizeof(struct LEVEL) * pagetable->EntryCount[i] = %d\n",sizeof(struct LEVEL) * pagetable->EntryCount[i]);
             // make all NextLevelPtr entries NULL at start
             for(int j = 0; j < pagetable->EntryCount[i]; j++)
                 ptr->NextLevelPtr[j] = NULL;

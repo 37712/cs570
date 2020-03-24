@@ -27,9 +27,9 @@ struct PAGETABLE
     struct LEVEL * RootLevelPtr;    // pointer to level 0 page table
     int pagesize;
     unsigned int levelCount;        // number of levels
-    unsigned int * BitmaskArray;    // mask for eavh level {0xFF000000, 0x00FF0000, 0x0000FF00}
+    unsigned int * BitmaskArray;    // mask for each level {0xFF000000, 0x00FF0000, 0x0000FF00}
     unsigned int * ShiftArray;      // number of bits to shift each level page bits {24, 16, 8}
-    unsigned int * EntryCount;      // number of possible pages for level i {2^8, 2^8, 2^8}
+    unsigned int * EntryCount;      //size of each array {2^8, 2^8, 2^8}
 };
 
 // this enables us to just say "PageTable" instead of "struct PAGETABLE"
@@ -40,10 +40,12 @@ PageTable pagetable; // yes, I like to live dangerously.
 
 // function declarations
 
-bool PageInsert(unsigned int LogicalAddress, unsigned int Frame);
+bool PageInsert(unsigned int LogicalAddress, int frame);
 
 void createPageTable(int argc, char ** argv, int optind);
 
-struct MAP * PageLookup(unsigned int LogicalAddress);
+int PageLookup(unsigned int LogicalAddress);
+
+int sizeofpagetable();
 
 #endif // PAGETABLE_H_INCLUDED

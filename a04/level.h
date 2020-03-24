@@ -2,7 +2,7 @@
  * CS570, spring 2020
  *
  * level.h
- * 
+ *
  * Carlos Gamino Reyes
  * misc0230@edoras.sdsu.edu
  * 819230978
@@ -32,10 +32,9 @@ struct LEVEL
 typedef struct LEVEL * Level; // this is pointer
 
 // insert next level
-bool insertLVL(unsigned int LogicalAddress, unsigned int Frame);
+bool insertLVL(unsigned int LogicalAddress, int frame);
 
 unsigned int LogicalToPage(unsigned int LogicalAddress, unsigned int Mask, unsigned int Shift);
-
 
 #endif // LEVEL_H_INCLUDED
 

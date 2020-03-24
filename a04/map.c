@@ -17,7 +17,7 @@
 // insert frame in to frame array
 bool insertframe(struct MAP * map, int pageindex, int frame)
 {
-    if(map->frameArray[pageindex] == -1) // if invalid
+    if(map->frameArray[pageindex] == -1) // if available
     {
         map->frameArray[pageindex] = frame;
         return true;
