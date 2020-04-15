@@ -5,8 +5,6 @@ CC=gcc
 #	-g          include information for symbolic debugger e.g. gdb 
 CCFLAGS=-std=c11 -g -lpthread
 
-MYFLAGS=-lpthread
-
 # Rules format:
 # target : dependency1 dependency2 ... dependencyN
 #     Command to make target, uses default rules if not specified
