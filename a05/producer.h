@@ -15,14 +15,7 @@
 #ifndef PRODUCER_H_INCLUDED
 #define PRODUCER_H_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #include "belt.h"
-#include <time.h>     // needed for nanosleep
-#include <pthread.h>    // needed to use pthreads
-#include <semaphore.h>  // needed to use semaphores
 
 // void * because it is a thread
 void * producer(void * ptr);

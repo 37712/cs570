@@ -12,21 +12,13 @@
  * 821006778
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>    // needed for bool
-
-#include <unistd.h>     // needed for getopt and optind
-#include <getopt.h>     // for linux compilation
-
-#include <time.h>
-#include <pthread.h>    // needed to use pthreads
-#include <semaphore.h>  // needed to use semaphores
-
 #include "mystruct.h"
 #include "belt.h"
 #include "producer.h"
 #include "consumer.h"
+
+#include <unistd.h>     // needed for getopt and optind
+#include <getopt.h>     // for linux compilation
 
 /* time conversions */
 #define NSPERMS     1000000 /* million ns/ms */
@@ -97,7 +89,7 @@ int main(int argc, char ** argv)
     E_frog_total = 0;
     E_escar_total = 0;
 
-    /* these variables are not global, they will be used for threads */
+    /* these variables are not global, so they will be used for threads */
     // multivariable structure for threads
     struct multivar * var = malloc(sizeof(struct multivar));
 
@@ -106,7 +98,7 @@ int main(int argc, char ** argv)
 
     var->total_produced = 0;
     var->total_consumed = 0;
-    var->production_limit = 30;			    // produce 100 candies
+    var->production_limit = 10;			    // produce 100 candies
 	
     // bool variables
     var->Ethel = E;
@@ -125,17 +117,14 @@ int main(int argc, char ** argv)
     var->frog_N.tv_sec = frog_N / MSPERSEC;                 /* # secs */
     var->frog_N.tv_nsec = (frog_N % MSPERSEC) * NSPERMS;    /* # nanosecs */
 
-    var->escar_N.tv_sec = escar_N / MSPERSEC;                 /* # secs */
-    var->escar_N.tv_nsec = (escar_N % MSPERSEC) * NSPERMS;    /* # nanosecs */
+    var->escar_N.tv_sec = escar_N / MSPERSEC;               /* # secs */
+    var->escar_N.tv_nsec = (escar_N % MSPERSEC) * NSPERMS;  /* # nanosecs */
 
     // belt (linked list) variables
 	var->belt = NULL;    // FIFO link list should be started as null
     var->belt_count = 0; // this is size of link list
 
     // initialize semaphores
-    sem_init(&var->prod, 0, 1);                 // to update production status
-    sem_init(&var->update_total, 0, 1);			// to update totals
-	sem_init(&var->available_space, 0, 1);	    // to check for belt_count
     sem_init(&var->belt_access, 0, 1);			// to get access to belt operations
 	sem_init(&var->type, 0, 1);				    // To set producer or consumer type
 
@@ -157,10 +146,7 @@ int main(int argc, char ** argv)
 	pthread_join(lucy_thread, NULL);
 	pthread_join(ethel_thread, NULL);
 
-    // destroy semaphores
-    sem_destroy(&var->prod);
-    sem_destroy(&var->update_total);		
-    sem_destroy(&var->available_space);	
+    // destroy semaphores	
     sem_destroy(&var->belt_access);		
     sem_destroy(&var->type);			
     

@@ -14,8 +14,9 @@
 
 #include "belt.h"
 
-// push candy type in to link list belt
-// push(frog_bite, &head);
+/* this is a fisr in first out linked list */
+
+// insert candy type in to link list belt
 void produce(producer_type candy_type, Link * head)
 {
     Link ptr = malloc(sizeof(struct node));// allocates memory for the node
@@ -49,8 +50,7 @@ void consume_helper(consumer_type consumer, producer_type candy_type)
 }
 
 // removes and returns the last element in the Link
-// Link head so that we may modify the head pointer if needed
-// pop(&head)
+// Link * head to allow for modification of head pointer
 producer_type consume(consumer_type consumer, Link * head){
 
     if(*head == NULL) return -1;

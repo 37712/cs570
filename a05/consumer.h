@@ -15,14 +15,8 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #include "belt.h"
-#include <time.h>     // needed for nanosleep
-#include <pthread.h>    // needed to use pthreads
-#include <semaphore.h>  // needed to use semaphores
+
 
 // void * because it is a thread
 void *consumer(void * ptr);

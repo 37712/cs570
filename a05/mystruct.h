@@ -19,9 +19,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <time.h>
-#include <pthread.h> 
-#include <semaphore.h>
+#include <time.h>       // needed to use nanosleep()
+#include <pthread.h>    // needed to use pthreads
+#include <semaphore.h>  // needed to use semaphores
 
 typedef enum ptype
 {
@@ -48,9 +48,6 @@ struct node{
 struct multivar
 {
     // semaphores
-    sem_t prod; // update production status
-    sem_t update_total; // to update totals
-    sem_t available_space; // to check for belt_count
     sem_t belt_access; // only one tread can have access to belt push or pop
     sem_t type; // configuratoin for production or consumption
 
@@ -69,12 +66,12 @@ struct multivar
     bool frog;
     bool escar;
 
-    // N sleep values
+    // N sleep time values
 	struct timespec Ethel_N;
     struct timespec Lucy_N;
     struct timespec frog_N;
     struct timespec escar_N;
-
+    
     Link belt; // belt in the head of linked list
     int belt_count; // amount of candy currently in belt
 };

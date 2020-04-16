@@ -15,13 +15,7 @@
 #ifndef BELT_H
 #define BELT_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #include "mystruct.h"
-#include <pthread.h> 
-#include <semaphore.h>
 
 // global variables, not for use in threads
 int produced; // total produced
