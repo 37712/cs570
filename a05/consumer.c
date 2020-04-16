@@ -42,14 +42,15 @@ void * consumer(void * ptr)
 
     // while production is still going on or there is candy in the belt
 	//while (total < limit && producing)
-    while(var->producing || var->belt != NULL)
+    //while(var->producing || var->belt != NULL)
+    while(var->total_produced < var->production_limit || var->belt != NULL)
     {
         // remove candy from belt
         producer_type candy_type;
         //printf("cA\n");
 		sem_wait(&var->belt_access);
 
-            candy_type = consume(consumer_type, &var->belt);// Add to belt
+            /*candy_type = consume(consumer_type, &var->belt);// Add to belt
 
             //printf("cA1\n");
 
@@ -58,7 +59,17 @@ void * consumer(void * ptr)
             {
                 sem_post(&var->belt_access);
                 continue;
+            }*/
+
+            // check to see if there is candy in the belt
+            if(var->belt_count == 0)
+            {
+                sem_post(&var->belt_access);
+                continue;
             }
+            
+            var->belt_count--; // reduce belt candy count
+            candy_type = consume(consumer_type, &var->belt);// remove candy from belt
 
             //printf("cA2\n");
 
@@ -74,9 +85,9 @@ void * consumer(void * ptr)
 
 		// sleep consumption thread for N miliseconds
 		if (var->Lucy && consumer_type == Lucy)
-			sleep(var->Lucy_N); // suspend execution of thread for x miliseconds
+			nanosleep(&var->Lucy_N, NULL); // suspend execution of thread for x miliseconds
 		else if (var->Ethel && consumer_type == Ethel)
-			sleep(var->Ethel_N); // suspend execution of thread for x miliseconds
+			nanosleep(&var->Ethel_N, NULL); // suspend execution of thread for x miliseconds
         
 	}
 }

@@ -18,24 +18,25 @@
 # semaphores must include the POSIX real time library -lrt while compiling
 
 CC = gcc
-CCFLAGS=-std=c11 -g -Wall -lpthread -lrt
+CCFLAGS= -Wall -lpthread -lrt
 
 # factory_controller.cpp producers.cpp consumers.cpp
 
 default: main.c producer.o consumer.o belt.o
-	${CC} ${CCFLAGS} -o mizzo main.c producer.o consumer.o belt.o
+	${CC} -o mizzo main.c producer.o consumer.o belt.o ${CCFLAGS}
 
 producer.o: producer.c producer.h
-	${CC} ${CCFLAGS} -c producer.c
+	${CC} -c producer.c ${CCFLAGS}
 	
 consumer.o: consumer.c consumer.h
-	${CC} ${CCFLAGS} -c consumer.c
+	${CC} -c consumer.c ${CCFLAGS}
 	
 belt.o: belt.c belt.h
-	${CC} ${CCFLAGS} -c belt.c
+	${CC} -c belt.c ${CCFLAGS}
 
+# run command works on linux only
 run:
-	./mizzo -E 1000 -L 3000 -f 1000 -e 100
+	./mizzo -E 1000 -L 3000 -f 600 -e 400
 
 clean:
 	rm *.o

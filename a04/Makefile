@@ -16,22 +16,22 @@
 #			-Wall // enables all the warnings
 
 CC = gcc
-CCFLAGS=-std=c11
+CCFLAGS=-std=c11 -g -Wall
 
 pagetable: main.c pagetable.o level.o map.o byutr.o
-	${CC} ${CCFLAGS} -g -o pagetable -Wall main.c pagetable.o level.o map.o byutr.o
+	${CC} -o pagetable main.c pagetable.o level.o map.o byutr.o ${CCFLAGS}
 	
 pagetable.o: pagetable.c pagetable.h
-	${CC} ${CCFLAGS} -Wall -c pagetable.c
+	${CC} -c pagetable.c ${CCFLAGS}
 	
 level.o: level.c level.h
-	${CC} ${CCFLAGS} -Wall -c level.c
+	${CC} -c level.c ${CCFLAGS}
 	
 map.o: map.c map.h
-	${CC} ${CCFLAGS} -Wall -c map.c
+	${CC} -c map.c ${CCFLAGS}
 
 byutr.o: byu_tracereader.c byutr.h
-	${CC} ${CCFLAGS} -o byutr.o -c byu_tracereader.c
+	${CC} -o byutr.o -c byu_tracereader.c ${CCFLAGS}
 	
 run:
 	./pagetable -p write.txt trace.sample.tr 8 7 4

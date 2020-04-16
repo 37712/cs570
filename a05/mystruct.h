@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <time.h>
 #include <pthread.h> 
 #include <semaphore.h>
 
@@ -68,11 +69,11 @@ struct multivar
     bool frog;
     bool escar;
 
-    // N values
-	float Ethel_N;
-    float Lucy_N;
-    float frog_N;
-    float escar_N;
+    // N sleep values
+	struct timespec Ethel_N;
+    struct timespec Lucy_N;
+    struct timespec frog_N;
+    struct timespec escar_N;
 
     Link belt; // belt in the head of linked list
     int belt_count; // amount of candy currently in belt

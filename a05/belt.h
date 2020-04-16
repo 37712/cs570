@@ -20,6 +20,8 @@
 #include <stdbool.h>
 
 #include "mystruct.h"
+#include <pthread.h> 
+#include <semaphore.h>
 
 // global variables, not for use in threads
 int produced; // total produced

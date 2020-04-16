@@ -19,6 +19,7 @@
 #include <unistd.h>     // needed for getopt and optind
 #include <getopt.h>     // for linux compilation
 
+#include <time.h>
 #include <pthread.h>    // needed to use pthreads
 #include <semaphore.h>  // needed to use semaphores
 
@@ -26,6 +27,10 @@
 #include "belt.h"
 #include "producer.h"
 #include "consumer.h"
+
+/* time conversions */
+#define NSPERMS     1000000 /* million ns/ms */
+#define MSPERSEC    1000  /* thousand ms/s */
 
 /*
  *  IMPORTANT:
@@ -54,25 +59,25 @@ int main(int argc, char ** argv)
             case 'E': /* Ethel consumer, N = number of miliseconds */
                 E = true;
                 Ethel_N = atoi(optarg);
-                printf("Ethel %d\n", Ethel_N);
+                //printf("Ethel %d\n", Ethel_N);
                 break;
 
             case 'L': /* Lucy consumer, N = number of miliseconds */
                 L = true;
                 Lucy_N = atoi(optarg);
-                printf("Lucy %d\n", Lucy_N);
+                //printf("Lucy %d\n", Lucy_N);
                 break;
 
             case 'f': /* frog bite, N = number of miliseconds */
                 f = true;
                 frog_N = atoi(optarg);
-                printf("frog bites %d\n", frog_N);
+                //printf("frog bites %d\n", frog_N);
                 break;
             
             case 'e': /* escargot, N = number of miliseconds */
                 e = true;
                 escar_N = atoi(optarg);
-                printf("escargot %d\n", escar_N);
+                //printf("escargot %d\n", escar_N);
                 break;
         }
     }
@@ -101,7 +106,7 @@ int main(int argc, char ** argv)
 
     var->total_produced = 0;
     var->total_consumed = 0;
-    var->production_limit = 10;			    // produce 100 candies
+    var->production_limit = 30;			    // produce 100 candies
 	
     // bool variables
     var->Ethel = E;
@@ -110,16 +115,18 @@ int main(int argc, char ** argv)
 	var->escar = e;
     var->producing = true;
 
-    // N values / 1000 to get miliseconds
-    var->Ethel_N = (float)Ethel_N/1000;
-    var->Lucy_N = (float)Lucy_N/1000;
-    var->frog_N = (float)frog_N/1000;
-    var->escar_N = (float)escar_N/1000;
+    // N miliseconds time conversion
+    var->Ethel_N.tv_sec = Ethel_N / MSPERSEC;               /* # secs */
+    var->Ethel_N.tv_nsec = (Ethel_N % MSPERSEC) * NSPERMS;  /* # nanosecs */
 
-    printf("\tEthel_N = %f\n",var->Ethel_N);    
-    printf("\tLucy_N  = %f\n",var->Lucy_N );
-    printf("\tfrog_N  = %f\n",var->frog_N );
-    printf("\tescar_N = %f\n",var->escar_N);
+    var->Lucy_N.tv_sec = Lucy_N / MSPERSEC;                 /* # secs */
+    var->Lucy_N.tv_nsec = (Lucy_N % MSPERSEC) * NSPERMS;    /* # nanosecs */
+
+    var->frog_N.tv_sec = frog_N / MSPERSEC;                 /* # secs */
+    var->frog_N.tv_nsec = (frog_N % MSPERSEC) * NSPERMS;    /* # nanosecs */
+
+    var->escar_N.tv_sec = escar_N / MSPERSEC;                 /* # secs */
+    var->escar_N.tv_nsec = (escar_N % MSPERSEC) * NSPERMS;    /* # nanosecs */
 
     // belt (linked list) variables
 	var->belt = NULL;    // FIFO link list should be started as null
@@ -140,15 +147,15 @@ int main(int argc, char ** argv)
 
     // thread creation
     pthread_create(&frogbite_thread, NULL, producer, var);
-	//pthread_create(&escargot_thread, NULL, producer, var);
+	pthread_create(&escargot_thread, NULL, producer, var);
 	pthread_create(&lucy_thread, NULL, consumer, var);
-	//pthread_create(&ethel_thread, NULL, consumer, var);
+	pthread_create(&ethel_thread, NULL, consumer, var);
 
     // proper thread finalization
     pthread_join(frogbite_thread, NULL);
-    //pthread_join(escargot_thread, NULL);
+    pthread_join(escargot_thread, NULL);
 	pthread_join(lucy_thread, NULL);
-	//pthread_join(ethel_thread, NULL);
+	pthread_join(ethel_thread, NULL);
 
     // destroy semaphores
     sem_destroy(&var->prod);
@@ -158,6 +165,6 @@ int main(int argc, char ** argv)
     sem_destroy(&var->type);			
     
     // print final report
-    //printreport();
+    printreport();
     return 0;
 }
