@@ -24,15 +24,15 @@
 
 typedef enum ptype
 {
-  frog_bite,
-  escargot
+  frog_bite, // 0
+  escargot // 1
 }
 producer_type;
 
 typedef enum ctype
 {
-  Lucy,
-  Ethel
+  Lucy, // 0
+  Ethel // 1
 }
 consumer_type;
 
@@ -47,31 +47,32 @@ struct node{
 struct multivar
 {
     // semaphores
-	sem_t goal;
-    sem_t unconsumed;
-    sem_t frog_bites;
+    sem_t prod; // update production status
+    sem_t update_total; // to update totals
     sem_t available_space; // to check for belt_count
     sem_t belt_access; // only one tread can have access to belt push or pop
-    sem_t type; // set up type of production or consumption
+    sem_t type; // configuratoin for production or consumption
 
     producer_type product_id; // frog bytes = 0, escargot = 1
 	consumer_type consumer_id; // Lucy = 0, Ethel = 1
-    //int count; // individual count of each candy
-    int total; // total candies produced so far
+
+    int total_produced; // total candies produced so far
+    int total_consumed; // total candies consumed so far
     int production_limit; // 100 candies
-    int consumed; // candies consumed so far
+    //int consumed; // candies consumed so far
 
     // flag variables
+    bool producing;
 	bool Ethel;
     bool Lucy;
     bool frog;
     bool escar;
 
     // N values
-	int Ethel_N;
-    int Lucy_N;
-    int frog_N;
-    int escar_N;
+	float Ethel_N;
+    float Lucy_N;
+    float frog_N;
+    float escar_N;
 
     Link belt; // belt in the head of linked list
     int belt_count; // amount of candy currently in belt

@@ -15,15 +15,9 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
-#include "mystruct.h"
-#include <pthread.h>    // needed to use pthreads
-#include <semaphore.h>  // needed to use semaphores
+#include "producer.h" // has everything we need and more
 
 // void * because it is a thread
-void *consumer(void * var);
+void *consumer(void * ptr);
 
 #endif // CONSUMER_H

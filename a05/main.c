@@ -76,60 +76,88 @@ int main(int argc, char ** argv)
                 break;
         }
     }
+    /*
+        Requeremnt #4:
+        Do not use global variables to communicate information to your threads.
+        Pass information through data structures.
+    */
+    // initialize gloval variables, these variables do not pass information to threads
+    produced = 0;
+    frog_total = 0;
+    escar_total = 0;
 
-    //initialize semaphore multivariables
+    L_frog_total = 0;
+    L_escar_total = 0;
+
+    E_frog_total = 0;
+    E_escar_total = 0;
+
+    /* these variables are not global, they will be used for threads */
+    // multivariable structure for threads
     struct multivar * var = malloc(sizeof(struct multivar));
-    var->total = 0;
-    var->production_limit = 10;			    // produce 100 candies
-	var->product_id = frog_bite; // frog bytes = 0, escargot = 1
+
+    var->product_id = frog_bite; // frog bytes = 0, escargot = 1
 	var->consumer_id = Lucy; // Lucy = 0, Ethel = 1
+
+    var->total_produced = 0;
+    var->total_consumed = 0;
+    var->production_limit = 10;			    // produce 100 candies
 	
+    // bool variables
     var->Ethel = E;
 	var->Lucy = L;
 	var->frog = f;
 	var->escar = e;
+    var->producing = true;
 
-    var->Ethel_N = Ethel_N;
-    var->Lucy_N = Lucy_N;
-    var->frog_N = frog_N;
-    var->escar_N = escar_N;
+    // N values / 1000 to get miliseconds
+    var->Ethel_N = (float)Ethel_N/1000;
+    var->Lucy_N = (float)Lucy_N/1000;
+    var->frog_N = (float)frog_N/1000;
+    var->escar_N = (float)escar_N/1000;
 
+    printf("\tEthel_N = %f\n",var->Ethel_N);    
+    printf("\tLucy_N  = %f\n",var->Lucy_N );
+    printf("\tfrog_N  = %f\n",var->frog_N );
+    printf("\tescar_N = %f\n",var->escar_N);
+
+    // belt (linked list) variables
 	var->belt = NULL;    // FIFO link list should be started as null
     var->belt_count = 0; // this is size of link list
 
     // initialize semaphores
-    //sem_init(&var->goal, 0, goal);              // Produce 100 candies
-	sem_init(&var->unconsumed, 0, 0);			// Number of unconsumed candies on belt
-	sem_init(&var->frog_bites, 0, 3);			// no more than 3 frog bites on belt
+    sem_init(&var->prod, 0, 1);                 // to update production status
+    sem_init(&var->update_total, 0, 1);			// to update totals
 	sem_init(&var->available_space, 0, 1);	    // to check for belt_count
-    sem_init(&var->belt_access, 0, 1);			// Critical region
+    sem_init(&var->belt_access, 0, 1);			// to get access to belt operations
 	sem_init(&var->type, 0, 1);				    // To set producer or consumer type
 
     // thread variables
     pthread_t frogbite_thread;
-	//pthread_t escargot_thread;
-	//pthread_t lucy_thread;
-	//pthread_t ethel_thread;
+	pthread_t escargot_thread;
+	pthread_t lucy_thread;
+	pthread_t ethel_thread;
 
     // thread creation
     pthread_create(&frogbite_thread, NULL, producer, var);
 	//pthread_create(&escargot_thread, NULL, producer, var);
-	//pthread_create(&lucy_thread, NULL, consumer, var);
+	pthread_create(&lucy_thread, NULL, consumer, var);
 	//pthread_create(&ethel_thread, NULL, consumer, var);
 
     // proper thread finalization
     pthread_join(frogbite_thread, NULL);
-	//pthread_join(escargot_producer, NULL);
-	//pthread_join(lucy_consumer, NULL);
-	//pthread_join(ethel_consumer, NULL);
+    //pthread_join(escargot_thread, NULL);
+	pthread_join(lucy_thread, NULL);
+	//pthread_join(ethel_thread, NULL);
 
     // destroy semaphores
-    //sem_destroy(&var->goal);          
-    sem_destroy(&var->unconsumed);		
-    sem_destroy(&var->frog_bites);		
+    sem_destroy(&var->prod);
+    sem_destroy(&var->update_total);		
     sem_destroy(&var->available_space);	
     sem_destroy(&var->belt_access);		
     sem_destroy(&var->type);			
     
+    // print final report
+    //printreport();
     return 0;
 }

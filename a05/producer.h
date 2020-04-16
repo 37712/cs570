@@ -20,7 +20,7 @@
 #include <stdbool.h>
 
 #include "belt.h"
-#include <unistd.h>     // needed for usleep
+#include <unistd.h>     // needed for sleep
 #include <pthread.h>    // needed to use pthreads
 #include <semaphore.h>  // needed to use semaphores
 

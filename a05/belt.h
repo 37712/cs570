@@ -21,15 +21,26 @@
 
 #include "mystruct.h"
 
+// global variables, not for use in threads
+int produced; // total produced
+int frog_total;
+int escar_total;
+
+int L_frog_total;
+int L_escar_total;
+
+int E_frog_total;
+int E_escar_total;
+
 void produce(producer_type candy_type, Link * head);
 
-producer_type consume(Link * head);
+producer_type consume(consumer_type consumer, Link * head);
 
 int candycount(producer_type candy_type, Link head);
 
 void printlist(Link ptr);
 
-void printbelt();
+void printupdate(Link head);
 
 void printreport();
 

@@ -35,7 +35,7 @@ belt.o: belt.c belt.h
 	${CC} ${CCFLAGS} -c belt.c
 
 run:
-	./mizzo -E 1000 -L 1200 -f 3000 -e 100
+	./mizzo -E 1000 -L 3000 -f 1000 -e 100
 
 clean:
 	rm *.o
