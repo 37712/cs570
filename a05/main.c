@@ -12,8 +12,6 @@
  * 821006778
  */
 
-#include "mystruct.h"
-#include "belt.h"
 #include "producer.h"
 #include "consumer.h"
 
@@ -98,7 +96,7 @@ int main(int argc, char ** argv)
 
     var->total_produced = 0;
     var->total_consumed = 0;
-    var->production_limit = 10;			    // produce 100 candies
+    var->production_limit = 100;			    // produce 100 candies
 	
     // bool variables
     var->Ethel = E;

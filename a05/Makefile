@@ -13,7 +13,7 @@
 # gcc options:
 #			-o name // specify name of output file
 #			-c 		// compiles source without linking, produces a .o object file
-#			-Wall // enables all the warnings
+#			-Wall 	// enables all the warnings
 
 # semaphores must include the POSIX real time library -lrt while compiling
 
