@@ -57,7 +57,6 @@ struct multivar
     int total_produced; // total candies produced so far
     int total_consumed; // total candies consumed so far
     int production_limit; // 100 candies
-    //int consumed; // candies consumed so far
 
     // flag variables
     bool producing;
